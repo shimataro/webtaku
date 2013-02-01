@@ -29,7 +29,7 @@ class Snapshot : QObject
     Q_OBJECT
 
     CustomWebPage *page;
-    QString *outputFilename;
+    QString outputFormat;
     QTimer *timer;
     int statusCode;
     QUrl redirectUrl;
@@ -40,7 +40,7 @@ class Snapshot : QObject
 
 public:
     Snapshot(QObject *parent = 0);
-    void shot(QUrl url, int minWidth = 1024, QString *outputFilename = new QString("output.png"), int quality = -1);
+    void shot(QUrl &url, QString &outputFormat, int minWidth = 1024, int quality = -1);
 
 private slots:
     void doneLoading(bool);

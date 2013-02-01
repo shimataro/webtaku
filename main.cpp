@@ -27,11 +27,11 @@ int main(int argc, char *argv[])
         QApplication a(argc, argv);
 
         QUrl url;
-        QString output;
+        QString format = "PPM";
         int minWidth = 1024;
 
         if(argc < 2) {
-            std::cout << "Usage: webimage <url> <output> <optional: minimum width>" << std::endl;
+            std::cout << "Usage: webimage <url> <format> <optional: minimum width>" << std::endl;
             return -1;
         }
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
                 break;
 
             case 2:
-                output = QString(argv[2]);
+                format = QString(argv[2]);
                 break;
 
             case 3:
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         }
 
         Snapshot shot;
-        shot.shot(url, minWidth, &output);
+        shot.shot(url, format, minWidth);
 
         return a.exec();
     }

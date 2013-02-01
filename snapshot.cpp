@@ -19,14 +19,17 @@
 #include "snapshot.h"
 #include "customwebpage.h"
 
+#define countof(a) (sizeof(a)/sizeof(a[0]))
+
 Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), statusCode(0), tries(0)
 {
 }
 
-void Snapshot::shot(QUrl url, int minWidth, QString *outputFilename, int quality)
+void Snapshot::shot(QUrl &url, QString &outputFormat, int minWidth, int quality)
 {
     this->minWidth = minWidth;
     this->quality = quality;
+    this->outputFormat = outputFormat.toUpper();
 
     QSize size(minWidth, 768);
 
@@ -40,7 +43,6 @@ void Snapshot::shot(QUrl url, int minWidth, QString *outputFilename, int quality
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(doneWaiting()));
 
-    this->outputFilename = outputFilename;
     connect(page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
     connect(page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
     connect(page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
@@ -73,43 +75,16 @@ void Snapshot::doneWaiting()
             view->setMinimumWidth(page->mainFrame()->contentsSize().width());
         }
 
-        QString lOutputFilename = outputFilename->toLower();
-        bool generatePdf = false;
-
-        if(lOutputFilename.endsWith(".pdf")) {
-            generatePdf = true;
-        }
-        else if(!lOutputFilename.endsWith(".jpg")) {
-            outputFilename->append(".jpg");
-        }
-
         view->setMinimumHeight(height);
         view->repaint();
         QPixmap pix = QPixmap::grabWidget(view, 0, 0, minWidth, height);
 
-        if(generatePdf) {
-            QPrinter printer;
-            printer.setOutputFileName(*outputFilename);
-            printer.setOutputFormat(QPrinter::PdfFormat);
-            printer.setPaperSize(page->mainFrame()->contentsSize(), QPrinter::DevicePixel);
-
-            QPainter painter(&printer);
-            painter.drawPixmap(0, 0, pix);
-            painter.end();
+        QFile stdout;
+        stdout.open(1, QIODevice::WriteOnly);
+        if (pix.save(&stdout, outputFormat.toStdString().c_str(), quality)) {
+            qDebug() << "Saved image.";
         } else {
-            if (pix.save(*outputFilename, "JPEG", quality)) {
-                qDebug() << "Saved image.";
-            }
-
-            outputFilename->chop(4);
-
-            QString thumbFilename = QString("%1_thumb.jpg").arg(*outputFilename);
-            QSize thumbSize((minWidth / 100) * 50, (height / 100) * 50);
-            pix =pix.scaled(thumbSize, Qt::KeepAspectRatio);
-
-            if (pix.save(thumbFilename, "JPEG", quality)) {
-                qDebug() << "Saved thumb.";
-            }
+            qDebug() << "Failed to save image.";
         }
 
         QApplication::quit();
