@@ -24,15 +24,15 @@
 class CustomWebPage : public QWebPage
 {
 public:
-    CustomWebPage(QObject *parent = 0);
-    QString userAgentForUrl(const QUrl &url) const;
+	CustomWebPage(QObject *parent = 0);
+	QString userAgentForUrl(const QUrl &url) const;
 
 protected:
-    void javaScriptAlert(QWebFrame *originatingFrame, const QString &msg);
-    bool javaScriptConfirm(QWebFrame *originatingFrame, const QString &msg);
+	void javaScriptAlert(QWebFrame *originatingFrame, const QString &msg);
+	bool javaScriptConfirm(QWebFrame *originatingFrame, const QString &msg);
 
 public slots:
-    bool shouldInterruptJavaScript();
+	bool shouldInterruptJavaScript();
 };
 
 #endif // CUSTOMWEBPAGE_H

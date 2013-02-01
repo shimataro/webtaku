@@ -20,7 +20,7 @@ CustomWebPage::CustomWebPage(QObject *parent) : QWebPage(parent) { }
 
 QString CustomWebPage::userAgentForUrl(const QUrl & /* url */) const
 {
-    return QString("Webimage - Snapshot tool. https://github.com/raphaelcruzeiro/webimage");
+	return QString("Webimage - Snapshot tool. https://github.com/raphaelcruzeiro/webimage");
 }
 
 void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QString & /* msg */)
@@ -29,10 +29,10 @@ void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QS
 
 bool CustomWebPage::javaScriptConfirm(QWebFrame * /* originatingFrame */, const QString & /* msg */)
 {
-    return false;
+	return false;
 }
 
 bool CustomWebPage::shouldInterruptJavaScript()
 {
-    return true;
+	return true;
 }

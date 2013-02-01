@@ -22,38 +22,36 @@
 
 int main(int argc, char *argv[])
 {
-    if(argc > 0)
-    {
-        QApplication a(argc, argv);
+	if(argc > 0)
+	{
+		QApplication a(argc, argv);
 
-        QUrl url;
-        QString format = "PPM";
-        int minWidth = 1024;
+		QUrl url;
+		QString format = "PPM";
+		int minWidth = 1024;
 
-        if(argc < 2) {
-            std::cout << "Usage: webimage <url> <format> <optional: minimum width>" << std::endl;
-            return -1;
-        }
+		if(argc < 2) {
+			std::cerr << "Usage: webimage [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] <url>" << std::endl;
+			return -1;
+		}
 
-        for(int i = 0; i < argc; i++) {
-            switch (i) {
-            case 1:
-                url = QUrl(QString(argv[1]));
-                break;
+		QRegExp regexp_format("--format=(\\w+)");
+		QRegExp regexp_min_width("--min-width=(\\d+)");
 
-            case 2:
-                format = QString(argv[2]);
-                break;
+		for(int i = 0; i < argc; i++) {
+			QString arg = argv[i];
+			if(regexp_format.exactMatch(arg)) {
+				format = regexp_format.cap(1);
+			} else if(regexp_min_width.exactMatch(arg)) {
+				minWidth = regexp_min_width.cap(1).toInt();
+			} else {
+				url = QUrl(arg);
+			}
+		}
 
-            case 3:
-                minWidth = QString(argv[3]).toInt();
-                break;
-            }
-        }
+		Snapshot shot;
+		shot.shot(url, format, minWidth);
 
-        Snapshot shot;
-        shot.shot(url, format, minWidth);
-
-        return a.exec();
-    }
+		return a.exec();
+	}
 }

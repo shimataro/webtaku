@@ -27,102 +27,102 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), 
 
 void Snapshot::shot(QUrl &url, QString &outputFormat, int minWidth, int quality)
 {
-    this->minWidth = minWidth;
-    this->quality = quality;
-    this->outputFormat = outputFormat.toUpper();
+	this->minWidth = minWidth;
+	this->quality = quality;
+	this->outputFormat = outputFormat.toUpper();
 
-    QSize size(minWidth, 768);
+	QSize size(minWidth, 768);
 
-    qDebug() << "Loading fake UI...";
-    view = new QWebView;
-    view->setPage(page);
-    QSize newSize = size;
-    newSize.setHeight(7000);
-    view->setMinimumSize(newSize);
+	qDebug() << "Loading fake UI...";
+	view = new QWebView;
+	view->setPage(page);
+	QSize newSize = size;
+	newSize.setHeight(7000);
+	view->setMinimumSize(newSize);
 
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), SLOT(doneWaiting()));
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), SLOT(doneWaiting()));
 
-    connect(page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
-    connect(page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
-    connect(page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+	connect(page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
+	connect(page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
+	connect(page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 
-    page->mainFrame()->load(url);
-    page->setViewportSize(size);
-    page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	page->mainFrame()->load(url);
+	page->setViewportSize(size);
+	page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
 
 void Snapshot::doneLoading(bool)
 {
-    // A reasonable waiting time for any script to execute
-    timer->start(3000);
+	// A reasonable waiting time for any script to execute
+	timer->start(3000);
 }
 
 void Snapshot::doneWaiting()
 {
-    if( statusCode != 0 &&
-        statusCode != 301 &&
-        statusCode != 302 &&
-        statusCode != 303
-       ) {
+	if( statusCode != 0 &&
+		statusCode != 301 &&
+		statusCode != 302 &&
+		statusCode != 303
+	   ) {
 
-        int height = page->mainFrame()->contentsSize().height();
+		int height = page->mainFrame()->contentsSize().height();
 
-        height = height > 8000 ? 8000 : height;
+		height = height > 8000 ? 8000 : height;
 
-        if(minWidth < page->mainFrame()->contentsSize().width()) {
-            minWidth = page->mainFrame()->contentsSize().width();
-            view->setMinimumWidth(page->mainFrame()->contentsSize().width());
-        }
+		if(minWidth < page->mainFrame()->contentsSize().width()) {
+			minWidth = page->mainFrame()->contentsSize().width();
+			view->setMinimumWidth(page->mainFrame()->contentsSize().width());
+		}
 
-        view->setMinimumHeight(height);
-        view->repaint();
-        QPixmap pix = QPixmap::grabWidget(view, 0, 0, minWidth, height);
+		view->setMinimumHeight(height);
+		view->repaint();
+		QPixmap pix = QPixmap::grabWidget(view, 0, 0, minWidth, height);
 
-        QFile stdout;
-        stdout.open(1, QIODevice::WriteOnly);
-        if (pix.save(&stdout, outputFormat.toStdString().c_str(), quality)) {
-            qDebug() << "Saved image.";
-        } else {
-            qDebug() << "Failed to save image.";
-        }
+		QFile stdout;
+		stdout.open(1, QIODevice::WriteOnly);
+		if (pix.save(&stdout, outputFormat.toStdString().c_str(), quality)) {
+			qDebug() << "Saved image.";
+		} else {
+			qDebug() << "Failed to save image.";
+		}
 
-        QApplication::quit();
-    }
-    else if(statusCode != 0) {
-        statusCode = 0;
-        qDebug() << "Redirecting to: " + redirectUrl.toString();
-        if(page->mainFrame()->url().toString().isEmpty()) {
-            qDebug() << "about:blank";
-            page->mainFrame()->load(this->redirectUrl);
-            qDebug() << "Loading";
-        }
-    }
+		QApplication::quit();
+	}
+	else if(statusCode != 0) {
+		statusCode = 0;
+		qDebug() << "Redirecting to: " + redirectUrl.toString();
+		if(page->mainFrame()->url().toString().isEmpty()) {
+			qDebug() << "about:blank";
+			page->mainFrame()->load(this->redirectUrl);
+			qDebug() << "Loading";
+		}
+	}
 
-    // This should ensure that the program never hangs
-    if(statusCode == 0) {
-        if(tries > 5) {
-            qDebug() << "Giving up.";
-            QApplication::quit();
-        }
-        tries++;
-    }
+	// This should ensure that the program never hangs
+	if(statusCode == 0) {
+		if(tries > 5) {
+			qDebug() << "Giving up.";
+			QApplication::quit();
+		}
+		tries++;
+	}
 }
 
 void Snapshot::gotReply(QNetworkReply *reply)
 {
-    if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")))
-    {
-        qDebug() << "Got reply " + reply->url().toString() + " - " + reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString() + " - " + reply->header(QNetworkRequest::ContentTypeHeader).toString();
-    }
+	if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")))
+	{
+		qDebug() << "Got reply " + reply->url().toString() + " - " + reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString() + " - " + reply->header(QNetworkRequest::ContentTypeHeader).toString();
+	}
 
-    if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")) && statusCode != 200) {
-        statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-        redirectUrl = QUrl(reply->header(QNetworkRequest::LocationHeader).toUrl());
-    }
+	if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")) && statusCode != 200) {
+		statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		redirectUrl = QUrl(reply->header(QNetworkRequest::LocationHeader).toUrl());
+	}
 }
 
 void Snapshot::sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
 {
-    reply->ignoreSslErrors();
+	reply->ignoreSslErrors();
 }

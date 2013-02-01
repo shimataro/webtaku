@@ -26,27 +26,27 @@ class CustomWebPage;
 
 class Snapshot : QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    CustomWebPage *page;
-    QString outputFormat;
-    QTimer *timer;
-    int statusCode;
-    QUrl redirectUrl;
-    QWebView *view;
-    int minWidth;
+	CustomWebPage *page;
+	QString outputFormat;
+	QTimer *timer;
+	int statusCode;
+	QUrl redirectUrl;
+	QWebView *view;
+	int minWidth;
 
-    int tries, quality;
+	int tries, quality;
 
 public:
-    Snapshot(QObject *parent = 0);
-    void shot(QUrl &url, QString &outputFormat, int minWidth = 1024, int quality = -1);
+	Snapshot(QObject *parent = 0);
+	void shot(QUrl &url, QString &outputFormat, int minWidth = 1024, int quality = -1);
 
 private slots:
-    void doneLoading(bool);
-    void doneWaiting();
-    void gotReply(QNetworkReply *reply);
-    void sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+	void doneLoading(bool);
+	void doneWaiting();
+	void gotReply(QNetworkReply *reply);
+	void sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 };
 
 #endif // SNAPSHOT_H
