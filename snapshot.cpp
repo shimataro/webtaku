@@ -147,7 +147,7 @@ void Snapshot::gotReply(QNetworkReply *reply)
     }
 }
 
-void Snapshot::sslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
+void Snapshot::sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
 {
     reply->ignoreSslErrors();
 }

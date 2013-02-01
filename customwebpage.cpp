@@ -18,16 +18,16 @@
 
 CustomWebPage::CustomWebPage(QObject *parent) : QWebPage(parent) { }
 
-QString CustomWebPage::userAgentForUrl(const QUrl &url) const
+QString CustomWebPage::userAgentForUrl(const QUrl & /* url */) const
 {
     return QString("Webimage - Snapshot tool. https://github.com/raphaelcruzeiro/webimage");
 }
 
-void CustomWebPage::javaScriptAlert(QWebFrame *originatingFrame, const QString &msg)
+void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QString & /* msg */)
 {
 }
 
-bool CustomWebPage::javaScriptConfirm(QWebFrame *originatingFrame, const QString &msg)
+bool CustomWebPage::javaScriptConfirm(QWebFrame * /* originatingFrame */, const QString & /* msg */)
 {
     return false;
 }
