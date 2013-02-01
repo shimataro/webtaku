@@ -25,18 +25,16 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), 
 {
 }
 
-void Snapshot::shot(QUrl &url, QString &outputFormat, int minWidth, int minHeight, int quality)
+void Snapshot::shot(QUrl &url, QString &outputFormat, QSize &minSize, int quality)
 {
-	this->minWidth = minWidth;
+	this->minWidth = minSize.width();
 	this->quality = quality;
 	this->outputFormat = outputFormat.toUpper();
-
-	QSize size(minWidth, minHeight);
 
 	qDebug() << "Loading fake UI...";
 	view = new QWebView;
 	view->setPage(page);
-	QSize newSize = size;
+	QSize newSize = minSize;
 	newSize.setHeight(7000);
 	view->setMinimumSize(newSize);
 
@@ -48,7 +46,7 @@ void Snapshot::shot(QUrl &url, QString &outputFormat, int minWidth, int minHeigh
 	connect(page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 
 	page->mainFrame()->load(url);
-	page->setViewportSize(size);
+	page->setViewportSize(minSize);
 	page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
 
