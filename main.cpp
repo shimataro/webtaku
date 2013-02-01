@@ -29,14 +29,16 @@ int main(int argc, char *argv[])
 		QUrl url;
 		QString format = "PPM";
 		int minWidth = 1024;
+		int minHeight = 768;
 
 		if(argc < 2) {
-			std::cerr << "Usage: webimage [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] <url>" << std::endl;
+			std::cerr << "Usage: webimage [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] <url>" << std::endl;
 			return -1;
 		}
 
 		QRegExp regexp_format("--format=(\\w+)");
 		QRegExp regexp_min_width("--min-width=(\\d+)");
+		QRegExp regexp_min_height("--min-height=(\\d+)");
 
 		for(int i = 0; i < argc; i++) {
 			QString arg = argv[i];
@@ -44,13 +46,15 @@ int main(int argc, char *argv[])
 				format = regexp_format.cap(1);
 			} else if(regexp_min_width.exactMatch(arg)) {
 				minWidth = regexp_min_width.cap(1).toInt();
+			} else if(regexp_min_height.exactMatch(arg)) {
+				minHeight = regexp_min_height.cap(1).toInt();
 			} else {
 				url = QUrl(arg);
 			}
 		}
 
 		Snapshot shot;
-		shot.shot(url, format, minWidth);
+		shot.shot(url, format, minWidth, minHeight);
 
 		return a.exec();
 	}

@@ -25,13 +25,13 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), 
 {
 }
 
-void Snapshot::shot(QUrl &url, QString &outputFormat, int minWidth, int quality)
+void Snapshot::shot(QUrl &url, QString &outputFormat, int minWidth, int minHeight, int quality)
 {
 	this->minWidth = minWidth;
 	this->quality = quality;
 	this->outputFormat = outputFormat.toUpper();
 
-	QSize size(minWidth, 768);
+	QSize size(minWidth, minHeight);
 
 	qDebug() << "Loading fake UI...";
 	view = new QWebView;

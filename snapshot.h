@@ -40,7 +40,7 @@ class Snapshot : QObject
 
 public:
 	Snapshot(QObject *parent = 0);
-	void shot(QUrl &url, QString &outputFormat, int minWidth = 1024, int quality = -1);
+	void shot(QUrl &url, QString &outputFormat, int minWidth, int minHeight, int quality = -1);
 
 private slots:
 	void doneLoading(bool);
