@@ -85,7 +85,7 @@ void Snapshot::doneWaiting()
 	}
 
 	// redirect
-	if(m_statusCode == 301 || m_statusCode == 302 || m_statusCode == 303)
+	if(m_statusCode == 301 || m_statusCode == 302 || m_statusCode == 303 || m_statusCode == 307)
 	{
 		m_statusCode = 0;
 		qDebug() << "Redirecting to: " + m_redirectUrl.toString();
