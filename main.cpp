@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
 	QUrl    url;
 	QString format = "PPM";
+	QString output = "";
 	QSize   minSize(1024, 768);
 	int     timer = 3;
 
@@ -38,24 +39,43 @@ int main(int argc, char *argv[])
 	QRegExp regexp_min_width ("--min-width=(\\d+)");
 	QRegExp regexp_min_height("--min-height=(\\d+)");
 	QRegExp regexp_timer     ("--timer=(\\d+)");
+	QRegExp regexp_output    ("--output=([^\\.]+\\.(\\w+))");
 
-	for(int i = 0; i < argc; i++) {
+	for(int i = 0; i < argc; i++)
+    {
 		QString arg = argv[i];
-		if(regexp_format.exactMatch(arg)) {
-			format = regexp_format.cap(1);
-		} else if(regexp_min_width.exactMatch(arg)) {
+		if(regexp_format.exactMatch(arg))
+        {
+            if(output.length() == 0)
+            {
+				format = regexp_format.cap(1);
+            }
+		}
+        else if(regexp_min_width.exactMatch(arg))
+        {
 			minSize.setWidth(regexp_min_width.cap(1).toInt());
-		} else if(regexp_min_height.exactMatch(arg)) {
+		}
+        else if(regexp_min_height.exactMatch(arg))
+        {
 			minSize.setHeight(regexp_min_height.cap(1).toInt());
-		} else if(regexp_timer.exactMatch(arg)) {
+		}
+        else if(regexp_timer.exactMatch(arg))
+        {
 			timer = regexp_timer.cap(1).toInt();
-		} else {
+		}
+        else if(regexp_output.exactMatch(arg))
+        {
+			output = regexp_output.cap(1);
+            format = regexp_output.cap(2).toUpper();
+		}
+        else
+        {
 			url = QUrl(arg);
 		}
 	}
 
 	Snapshot shot;
-	shot.shot(url, format, minSize, timer);
+	shot.shot(url, output, format, minSize, timer);
 
 	return a.exec();
 }

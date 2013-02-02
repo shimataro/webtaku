@@ -31,6 +31,7 @@ class Snapshot : QObject
 	CustomWebPage *m_page;
 	QTimer        *m_timer;
 	QWebView      *m_view;
+	QString m_output;
 	QString m_outputFormat;
 	QUrl    m_redirectUrl;
 	QSize   m_minSize;
@@ -42,7 +43,7 @@ class Snapshot : QObject
 
 public:
 	Snapshot(QObject *parent = 0);
-	void shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int timer_ms = 3, const int quality = -1);
+	void shot(const QUrl &url, const QString &output, const QString &outputFormat, const QSize &minSize, const int timer_ms = 3, const int quality = -1);
 
 private slots:
 	void doneLoading(bool);

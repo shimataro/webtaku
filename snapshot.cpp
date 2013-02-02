@@ -25,10 +25,11 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), m_page(new CustomWebPage)
 {
 }
 
-void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
+void Snapshot::shot(const QUrl &url, const QString &output, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
 {
 	this->m_minSize = minSize;
 	this->m_quality = quality;
+	this->m_output  = output;
 	this->m_outputFormat = outputFormat.toUpper();
     this->m_timer_ms = timer_ms;
 
@@ -61,29 +62,43 @@ void Snapshot::doneWaiting()
 		m_statusCode != 301 &&
 		m_statusCode != 302 &&
 		m_statusCode != 303
-	   ) {
-
+	   )
+	{
 		bool sizeChanged = false;
 		const int contentWidth  = m_page->mainFrame()->contentsSize().width();
 		const int contentHeight = m_page->mainFrame()->contentsSize().height();
-		if(m_minSize.width() < contentWidth) {
+		if(m_minSize.width() < contentWidth)
+		{
 			sizeChanged = true;
 		}
-		if(m_minSize.height() < contentHeight) {
+		if(m_minSize.height() < contentHeight)
+		{
 			sizeChanged = true;
 		}
-		if(sizeChanged) {
+		if(sizeChanged)
+		{
 			m_view->setMinimumSize(contentWidth, contentHeight);
 			m_view->repaint();
 		}
 
 		QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentWidth, contentHeight);
 
-		QFile stdout;
-		stdout.open(1, QIODevice::WriteOnly);
-		if (pix.save(&stdout, m_outputFormat.toStdString().c_str(), m_quality)) {
-			qDebug() << "Saved image.";
-		} else {
+		// output image data
+		const char *format = m_outputFormat.toStdString().c_str();
+		bool result = true;
+		if(m_output.length() > 0)
+		{
+			result = pix.save(m_output, format, m_quality);
+		}
+		else
+		{
+			QFile file;
+			file.open(stdout, QIODevice::WriteOnly);
+			result = pix.save(&file, format, m_quality);
+		}
+
+		if (!result)
+		{
 			qDebug() << "Failed to save image.";
 		}
 
