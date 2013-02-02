@@ -34,7 +34,7 @@ class Snapshot : QObject
 	int statusCode;
 	QUrl redirectUrl;
 	QWebView *view;
-	int minWidth;
+	QSize minSize;
 
 	int tries, quality;
 

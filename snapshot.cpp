@@ -27,16 +27,14 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), 
 
 void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int quality)
 {
-	this->minWidth = minSize.width();
+	this->minSize = minSize;
 	this->quality = quality;
 	this->outputFormat = outputFormat.toUpper();
 
 	qDebug() << "Loading fake UI...";
 	view = new QWebView;
 	view->setPage(page);
-	QSize newSize = minSize;
-	newSize.setHeight(7000);
-	view->setMinimumSize(newSize);
+	view->setMinimumSize(minSize);
 
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), SLOT(doneWaiting()));
@@ -64,18 +62,21 @@ void Snapshot::doneWaiting()
 		statusCode != 303
 	   ) {
 
-		int height = page->mainFrame()->contentsSize().height();
-
-		height = height > 8000 ? 8000 : height;
-
-		if(minWidth < page->mainFrame()->contentsSize().width()) {
-			minWidth = page->mainFrame()->contentsSize().width();
-			view->setMinimumWidth(page->mainFrame()->contentsSize().width());
+		bool sizeChanged = false;
+		const int contentWidth  = page->mainFrame()->contentsSize().width();
+		const int contentHeight = page->mainFrame()->contentsSize().height();
+		if(minSize.width() < contentWidth) {
+			sizeChanged = true;
+		}
+		if(minSize.height() < contentHeight) {
+			sizeChanged = true;
+		}
+		if(sizeChanged) {
+			view->setMinimumSize(contentWidth, contentHeight);
+			view->repaint();
 		}
 
-		view->setMinimumHeight(height);
-		view->repaint();
-		QPixmap pix = QPixmap::grabWidget(view, 0, 0, minWidth, height);
+		QPixmap pix = QPixmap::grabWidget(view, 0, 0, contentWidth, contentHeight);
 
 		QFile stdout;
 		stdout.open(1, QIODevice::WriteOnly);
