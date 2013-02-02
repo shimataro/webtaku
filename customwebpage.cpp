@@ -1,5 +1,5 @@
-//    Webimage - Website to image render tool
-//    Copyright (C) 2012  Raphael Cruzeiro
+//    Wiget - Website to image render tool (forked from Webimage)
+//    Copyright (C) 2013 Shimataro
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ CustomWebPage::CustomWebPage(QObject *parent) : QWebPage(parent) { }
 
 QString CustomWebPage::userAgentForUrl(const QUrl & /* url */) const
 {
-	return QString("Webimage - Snapshot tool. https://github.com/raphaelcruzeiro/webimage");
+	return QString("Wiget - Snapshot tool. https://github.com/shimataro/wiget");
 }
 
 void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QString & /* msg */)

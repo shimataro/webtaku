@@ -6,7 +6,7 @@
 
 QT       += core webkit network
 
-TARGET = webimage
+TARGET = wiget
 CONFIG   += console
 CONFIG   -= app_bundle
 

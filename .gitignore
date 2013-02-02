@@ -2,13 +2,13 @@
 /nbproject/
 
 .DS_Store
-webimage.pro.user
+wiget.pro.user
 
 # auto generated files
 Makefile
 moc_*
 *.o
-webimage
+wiget
 
 # temporary & backup files
 *.bak

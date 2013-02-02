@@ -1,24 +1,21 @@
-### Live demo
-http://previewtool.raphaelcruzeiro.com
-
 ###Setup Instructions
 
-http://news.ycombinator.com/item?id=4034671
+# install tools to create thumbnail
+sudo apt-get install -y xvfb libqtwebkit-dev libicu-dev
 
-git clone https://github.com/raphaelcruzeiro/webimage.git
+# install MS fonts and Japanese fonts
+sudo apt-get install -y ttf-mscorefonts-installer ttf-umefont
 
-sudo aptitude install -y xvfb
+# make
+git clone https://github.com/shimataro/wiget.git
+cd wiget
+qmake
+make
 
-sudo aptitude install -y libqtwebkit-dev
+# create image
+# xvfb is only necessary for running wiget on a headless server (i.e. a server without a GUI or even a graphics card)
+xvfb-run --server-args="-screen 0, 1024x768x24" ./wiget --format=PNG --min-width=1024 http://example.com/ >output.png
 
-cd webimage
-
-qmake webimage.pro
-
-make all Makefile
-
-xvfb-run --server-args="-screen 0, 1024x768x24" ./webimage http://news.ycombinator.com/ output.jpg 1024
-
-Webimage will generate the file on the appropriate format for the output file name. Current supported formats are: jpg and pdf.
-
-Note: xvfb is only necessary for running webimage on a headless server (i.e. a server without a GUI or even a graphics card)
+Note:
+You can create thumbnail with ImageMagick as below.
+./wiget http://example.com/ | convert -resize 320 -crop 320x240+0+0 - thumb.png

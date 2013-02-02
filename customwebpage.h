@@ -1,5 +1,5 @@
-//    Webimage - Website to image render tool
-//    Copyright (C) 2012  Raphael Cruzeiro
+//    Wiget - Website to image render tool (forked from Webimage)
+//    Copyright (C) 2013 Shimataro
 
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
