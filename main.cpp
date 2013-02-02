@@ -22,39 +22,36 @@
 
 int main(int argc, char *argv[])
 {
-	if(argc > 0)
-	{
-		QApplication a(argc, argv);
-
-		QUrl url;
-		QString format = "PPM";
-		QSize minSize(1024, 768);
-
-		if(argc < 2) {
-			std::cerr << "Usage: webimage [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] <url>" << std::endl;
-			return -1;
-		}
-
-		QRegExp regexp_format("--format=(\\w+)");
-		QRegExp regexp_min_width("--min-width=(\\d+)");
-		QRegExp regexp_min_height("--min-height=(\\d+)");
-
-		for(int i = 0; i < argc; i++) {
-			QString arg = argv[i];
-			if(regexp_format.exactMatch(arg)) {
-				format = regexp_format.cap(1);
-			} else if(regexp_min_width.exactMatch(arg)) {
-				minSize.setWidth(regexp_min_width.cap(1).toInt());
-			} else if(regexp_min_height.exactMatch(arg)) {
-				minSize.setHeight(regexp_min_height.cap(1).toInt());
-			} else {
-				url = QUrl(arg);
-			}
-		}
-
-		Snapshot shot;
-		shot.shot(url, format, minSize);
-
-		return a.exec();
+	if(argc < 2) {
+		std::cerr << "Usage: webimage [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] <url>" << std::endl;
+		return -1;
 	}
+
+	QApplication a(argc, argv);
+
+	QUrl url;
+	QString format = "PPM";
+	QSize minSize(1024, 768);
+
+	QRegExp regexp_format("--format=(\\w+)");
+	QRegExp regexp_min_width("--min-width=(\\d+)");
+	QRegExp regexp_min_height("--min-height=(\\d+)");
+
+	for(int i = 0; i < argc; i++) {
+		QString arg = argv[i];
+		if(regexp_format.exactMatch(arg)) {
+			format = regexp_format.cap(1);
+		} else if(regexp_min_width.exactMatch(arg)) {
+			minSize.setWidth(regexp_min_width.cap(1).toInt());
+		} else if(regexp_min_height.exactMatch(arg)) {
+			minSize.setHeight(regexp_min_height.cap(1).toInt());
+		} else {
+			url = QUrl(arg);
+		}
+	}
+
+	Snapshot shot;
+	shot.shot(url, format, minSize);
+
+	return a.exec();
 }

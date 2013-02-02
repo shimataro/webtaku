@@ -25,7 +25,7 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), 
 {
 }
 
-void Snapshot::shot(QUrl &url, QString &outputFormat, QSize &minSize, int quality)
+void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int quality)
 {
 	this->minWidth = minSize.width();
 	this->quality = quality;
