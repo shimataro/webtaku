@@ -21,7 +21,8 @@
 
 int main(int argc, char *argv[])
 {
-	if(argc < 2) {
+	if(argc < 2)
+	{
 		std::cerr << "Usage:" << std::endl;
 		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--timer=<milliseconds>] <url>" << std::endl;
 		return -1;
@@ -45,37 +46,37 @@ int main(int argc, char *argv[])
     {
 		QString arg = argv[i];
 		if(regexp_format.exactMatch(arg))
-        {
-            if(output.length() == 0)
-            {
+		{
+			if(output.length() == 0)
+			{
 				format = regexp_format.cap(1);
-            }
+			}
 		}
-        else if(regexp_min_width.exactMatch(arg))
-        {
+		else if(regexp_min_width.exactMatch(arg))
+		{
 			minSize.setWidth(regexp_min_width.cap(1).toInt());
 		}
-        else if(regexp_min_height.exactMatch(arg))
-        {
+		else if(regexp_min_height.exactMatch(arg))
+		{
 			minSize.setHeight(regexp_min_height.cap(1).toInt());
 		}
-        else if(regexp_timer.exactMatch(arg))
-        {
+		else if(regexp_timer.exactMatch(arg))
+		{
 			timer = regexp_timer.cap(1).toInt();
 		}
-        else if(regexp_output.exactMatch(arg))
-        {
+		else if(regexp_output.exactMatch(arg))
+		{
 			output = regexp_output.cap(1);
-            format = regexp_output.cap(2).toUpper();
+			format = regexp_output.cap(2);
 		}
-        else
-        {
+		else
+		{
 			url = QUrl(arg);
 		}
 	}
 
 	Snapshot shot;
-	shot.shot(url, output, format, minSize, timer);
+	shot.shot(url, output, format.toUpper(), minSize, timer);
 
 	return a.exec();
 }
