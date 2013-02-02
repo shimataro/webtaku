@@ -1,12 +1,16 @@
+# IDE setting files
+/nbproject/
+
 .DS_Store
 webimage.pro.user
 
+# auto generated files
 Makefile
-
 moc_*
 *.o
 webimage
 
+# temporary & backup files
 *.bak
 *.swp
 *~
