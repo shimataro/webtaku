@@ -20,7 +20,7 @@
 #include <QtWebKit>
 #include <QImage>
 #include <QPainter>
-#include<QTimer>
+#include <QTimer>
 
 class CustomWebPage;
 
@@ -35,12 +35,13 @@ class Snapshot : QObject
 	QUrl redirectUrl;
 	QWebView *view;
 	QSize minSize;
+    int timer_ms;
 
 	int tries, quality;
 
 public:
 	Snapshot(QObject *parent = 0);
-	void shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, int quality = -1);
+	void shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int timer_sec = 3, const int quality = -1);
 
 private slots:
 	void doneLoading(bool);

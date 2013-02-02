@@ -25,11 +25,12 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), 
 {
 }
 
-void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int quality)
+void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
 {
 	this->minSize = minSize;
 	this->quality = quality;
 	this->outputFormat = outputFormat.toUpper();
+    this->timer_ms = timer_ms;
 
 	qDebug() << "Loading fake UI...";
 	view = new QWebView;
@@ -51,7 +52,7 @@ void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &m
 void Snapshot::doneLoading(bool)
 {
 	// A reasonable waiting time for any script to execute
-	timer->start(3000);
+	timer->start(timer_ms);
 }
 
 void Snapshot::doneWaiting()
