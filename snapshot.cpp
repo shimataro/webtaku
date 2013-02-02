@@ -21,10 +21,18 @@
 
 #define countof(a) (sizeof(a)/sizeof(a[0]))
 
-Snapshot::Snapshot(QObject *parent) : QObject(parent), m_page(new CustomWebPage), m_statusCode(0), m_tries(0)
+Snapshot::Snapshot(QObject *parent) : QObject(parent)
 {
+	m_page       = new CustomWebPage;
+	m_statusCode = 0;
+	m_tries      = 0;
 }
 
+Snapshot::~Snapshot()
+{
+	delete m_page;
+	m_page = NULL;
+}
 void Snapshot::shot(const QUrl &url, const QString &output, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
 {
 	this->m_minSize = minSize;
