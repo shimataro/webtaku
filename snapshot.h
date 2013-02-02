@@ -28,16 +28,17 @@ class Snapshot : QObject
 {
 	Q_OBJECT
 
-	CustomWebPage *page;
-	QString outputFormat;
-	QTimer *timer;
-	int statusCode;
-	QUrl redirectUrl;
-	QWebView *view;
-	QSize minSize;
-    int timer_ms;
+	CustomWebPage *m_page;
+	QTimer        *m_timer;
+	QWebView      *m_view;
+	QString m_outputFormat;
+	QUrl    m_redirectUrl;
+	QSize   m_minSize;
 
-	int tries, quality;
+	int m_statusCode;
+    int m_timer_ms;
+	int m_tries;
+    int m_quality;
 
 public:
 	Snapshot(QObject *parent = 0);

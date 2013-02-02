@@ -21,67 +21,67 @@
 
 #define countof(a) (sizeof(a)/sizeof(a[0]))
 
-Snapshot::Snapshot(QObject *parent) : QObject(parent), page(new CustomWebPage), statusCode(0), tries(0)
+Snapshot::Snapshot(QObject *parent) : QObject(parent), m_page(new CustomWebPage), m_statusCode(0), m_tries(0)
 {
 }
 
 void Snapshot::shot(const QUrl &url, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
 {
-	this->minSize = minSize;
-	this->quality = quality;
-	this->outputFormat = outputFormat.toUpper();
-    this->timer_ms = timer_ms;
+	this->m_minSize = minSize;
+	this->m_quality = quality;
+	this->m_outputFormat = outputFormat.toUpper();
+    this->m_timer_ms = timer_ms;
 
 	qDebug() << "Loading fake UI...";
-	view = new QWebView;
-	view->setPage(page);
-	view->setMinimumSize(minSize);
+	m_view = new QWebView;
+	m_view->setPage(m_page);
+	m_view->setMinimumSize(minSize);
 
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), SLOT(doneWaiting()));
+	m_timer = new QTimer(this);
+	connect(m_timer, SIGNAL(timeout()), SLOT(doneWaiting()));
 
-	connect(page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
-	connect(page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
-	connect(page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+	connect(m_page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
+	connect(m_page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
+	connect(m_page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 
-	page->mainFrame()->load(url);
-	page->setViewportSize(minSize);
-	page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	m_page->mainFrame()->load(url);
+	m_page->setViewportSize(minSize);
+	m_page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
 
 void Snapshot::doneLoading(bool)
 {
 	// A reasonable waiting time for any script to execute
-	timer->start(timer_ms);
+	m_timer->start(m_timer_ms);
 }
 
 void Snapshot::doneWaiting()
 {
-	if( statusCode != 0 &&
-		statusCode != 301 &&
-		statusCode != 302 &&
-		statusCode != 303
+	if( m_statusCode != 0 &&
+		m_statusCode != 301 &&
+		m_statusCode != 302 &&
+		m_statusCode != 303
 	   ) {
 
 		bool sizeChanged = false;
-		const int contentWidth  = page->mainFrame()->contentsSize().width();
-		const int contentHeight = page->mainFrame()->contentsSize().height();
-		if(minSize.width() < contentWidth) {
+		const int contentWidth  = m_page->mainFrame()->contentsSize().width();
+		const int contentHeight = m_page->mainFrame()->contentsSize().height();
+		if(m_minSize.width() < contentWidth) {
 			sizeChanged = true;
 		}
-		if(minSize.height() < contentHeight) {
+		if(m_minSize.height() < contentHeight) {
 			sizeChanged = true;
 		}
 		if(sizeChanged) {
-			view->setMinimumSize(contentWidth, contentHeight);
-			view->repaint();
+			m_view->setMinimumSize(contentWidth, contentHeight);
+			m_view->repaint();
 		}
 
-		QPixmap pix = QPixmap::grabWidget(view, 0, 0, contentWidth, contentHeight);
+		QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentWidth, contentHeight);
 
 		QFile stdout;
 		stdout.open(1, QIODevice::WriteOnly);
-		if (pix.save(&stdout, outputFormat.toStdString().c_str(), quality)) {
+		if (pix.save(&stdout, m_outputFormat.toStdString().c_str(), m_quality)) {
 			qDebug() << "Saved image.";
 		} else {
 			qDebug() << "Failed to save image.";
@@ -89,23 +89,23 @@ void Snapshot::doneWaiting()
 
 		QApplication::quit();
 	}
-	else if(statusCode != 0) {
-		statusCode = 0;
-		qDebug() << "Redirecting to: " + redirectUrl.toString();
-		if(page->mainFrame()->url().toString().isEmpty()) {
+	else if(m_statusCode != 0) {
+		m_statusCode = 0;
+		qDebug() << "Redirecting to: " + m_redirectUrl.toString();
+		if(m_page->mainFrame()->url().toString().isEmpty()) {
 			qDebug() << "about:blank";
-			page->mainFrame()->load(this->redirectUrl);
+			m_page->mainFrame()->load(this->m_redirectUrl);
 			qDebug() << "Loading";
 		}
 	}
 
 	// This should ensure that the program never hangs
-	if(statusCode == 0) {
-		if(tries > 5) {
+	if(m_statusCode == 0) {
+		if(m_tries > 5) {
 			qDebug() << "Giving up.";
 			QApplication::quit();
 		}
-		tries++;
+		m_tries++;
 	}
 }
 
@@ -116,9 +116,9 @@ void Snapshot::gotReply(QNetworkReply *reply)
 		qDebug() << "Got reply " + reply->url().toString() + " - " + reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString() + " - " + reply->header(QNetworkRequest::ContentTypeHeader).toString();
 	}
 
-	if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")) && statusCode != 200) {
-		statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-		redirectUrl = QUrl(reply->header(QNetworkRequest::LocationHeader).toUrl());
+	if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")) && m_statusCode != 200) {
+		m_statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		m_redirectUrl = QUrl(reply->header(QNetworkRequest::LocationHeader).toUrl());
 	}
 }
 
