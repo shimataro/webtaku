@@ -31,7 +31,11 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent)
 Snapshot::~Snapshot()
 {
 	delete m_page;
-	m_page = NULL;
+	delete m_view;
+	delete m_timer;
+	m_page  = NULL;
+	m_view  = NULL;
+	m_timer = NULL;
 }
 void Snapshot::shot(const QUrl &url, const QString &outputFilename, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
 {
