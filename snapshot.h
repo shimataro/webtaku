@@ -29,25 +29,28 @@ class Snapshot : QObject
 	Q_OBJECT
 
 	CustomWebPage *m_page;
-	QTimer        *m_timer;
 	QWebView      *m_view;
+	QTimer        *m_timer;
+
 	QString m_outputFilename;
 	QString m_outputFormat;
-	QUrl    m_redirectUrl;
 	QSize   m_minSize;
+	int     m_timer_ms;
+	int     m_quality;
 
-	int m_statusCode;
-    int m_timer_ms;
-	int m_tries;
-    int m_quality;
+	QUrl m_redirectUrl;
+	int  m_statusCode;
+	int  m_tries;
 
 public:
-	Snapshot(QObject *parent = 0);
+	Snapshot(QObject *parent = NULL);
 	~Snapshot();
 	void shot(const QUrl &url, const QString &outputFilename, const QString &outputFormat, const QSize &minSize, const int timer_ms = 3, const int quality = -1);
 
 private:
-	bool _outputPixmap(const QPixmap &pixmap);
+	QWebView *_getView();
+	QTimer   *_getTimer();
+	bool      _outputPixmap(const QPixmap &pixmap);
 
 private slots:
 	void doneLoading(bool);

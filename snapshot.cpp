@@ -33,29 +33,41 @@ Snapshot::~Snapshot()
 	delete m_page;
 	m_page = NULL;
 }
-void Snapshot::shot(const QUrl &url, const QString &output, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
+void Snapshot::shot(const QUrl &url, const QString &outputFilename, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
 {
-	this->m_minSize = minSize;
-	this->m_quality = quality;
-	this->m_outputFilename  = output;
-	this->m_outputFormat = outputFormat;
-	this->m_timer_ms = timer_ms;
+	m_outputFilename = outputFilename;
+	m_outputFormat   = outputFormat;
+	m_minSize        = minSize;
+	m_timer_ms       = timer_ms;
+	m_quality        = quality;
 
 	qDebug() << "Loading fake UI...";
-	m_view = new QWebView;
-	m_view->setPage(m_page);
-	m_view->setMinimumSize(minSize);
+	m_view  = _getView();
+	m_timer = _getTimer();
 
-	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), SLOT(doneWaiting()));
-
 	connect(m_page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
 	connect(m_page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
 	connect(m_page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 
+	// setup page
 	m_page->mainFrame()->load(url);
 	m_page->setViewportSize(minSize);
 	m_page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+}
+
+QWebView *Snapshot::_getView()
+{
+	QWebView *view = new QWebView;
+	view->setPage(m_page);
+	view->setMinimumSize(m_minSize);
+	return view;
+}
+
+QTimer *Snapshot::_getTimer()
+{
+	QTimer *timer = new QTimer(this);
+	return timer;
 }
 
 bool Snapshot::_outputPixmap(const QPixmap &pixmap)
