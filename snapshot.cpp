@@ -122,26 +122,17 @@ void Snapshot::doneWaiting()
 		return;
 	}
 
-	// get image
-	bool sizeChanged = false;
-	const int contentWidth  = m_page->mainFrame()->contentsSize().width();
-	const int contentHeight = m_page->mainFrame()->contentsSize().height();
-	if(m_minSize.width() < contentWidth)
+	// resize view
+	const QSize contentsSize  = m_page->mainFrame()->contentsSize();
+	if(m_minSize.width() < contentsSize.width() || m_minSize.height() < contentsSize.height())
 	{
-		sizeChanged = true;
-	}
-	if(m_minSize.height() < contentHeight)
-	{
-		sizeChanged = true;
-	}
-	if(sizeChanged)
-	{
-		m_view->setMinimumSize(contentWidth, contentHeight);
+		m_minSize = contentsSize;
+		m_view->setMinimumSize(contentsSize);
 		m_view->repaint();
 	}
 
 	// output image data
-	QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentWidth, contentHeight);
+	QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentsSize.width(), contentsSize.height());
 	if(!_outputPixmap(pix))
 	{
 		qDebug() << "Failed to save image.";
