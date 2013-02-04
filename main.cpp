@@ -40,17 +40,14 @@ int main(int argc, char *argv[])
 	QRegExp regexp_min_width ("--min-width=(\\d+)");
 	QRegExp regexp_min_height("--min-height=(\\d+)");
 	QRegExp regexp_timer     ("--timer=(\\d+)");
-	QRegExp regexp_output    ("--output=([^\\.]+\\.(\\w+))");
+	QRegExp regexp_output    ("--output=(.*)");
 
 	for(int i = 0; i < argc; i++)
-    {
+	{
 		QString arg = argv[i];
 		if(regexp_format.exactMatch(arg))
 		{
-			if(output.length() == 0)
-			{
-				format = regexp_format.cap(1);
-			}
+			format = regexp_format.cap(1);
 		}
 		else if(regexp_min_width.exactMatch(arg))
 		{
@@ -67,7 +64,6 @@ int main(int argc, char *argv[])
 		else if(regexp_output.exactMatch(arg))
 		{
 			output = regexp_output.cap(1);
-			format = regexp_output.cap(2);
 		}
 		else
 		{

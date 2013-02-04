@@ -76,9 +76,9 @@ QTimer *Snapshot::_getTimer()
 
 bool Snapshot::_outputPixmap(const QPixmap &pixmap)
 {
-	if(m_outputFilename.length() > 0)
+	if(!m_outputFilename.isEmpty())
 	{
-		return pixmap.save(m_outputFilename, m_outputFormat.toStdString().c_str(), m_quality);
+		return pixmap.save(m_outputFilename, NULL, m_quality);
 	}
 	else
 	{
