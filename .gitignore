@@ -1,8 +1,12 @@
 # IDE setting files
 /nbproject/
 
-.DS_Store
-wiget.pro.user
+/.buildpath
+/.project
+/.settings/
+
+/.kdev*/
+/wiget.kdev*
 
 # auto generated files
 Makefile
