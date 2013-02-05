@@ -6,11 +6,13 @@
 ## install MS fonts and Japanese fonts
 `sudo apt-get install -y ttf-mscorefonts-installer ttf-umefont`
 
-## make
+## build & install
 `git clone https://github.com/shimataro/wiget.git`  
 `cd wiget`  
 `qmake`  
 `make`  
+`sudo make install`  
+(will be installed in /usr/local/bin and /usr/local/src)
 
 ---
 
