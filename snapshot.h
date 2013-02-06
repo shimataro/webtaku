@@ -50,9 +50,10 @@ public:
 private:
 	QWebView *_getView();
 	QTimer   *_getTimer();
-	bool      _handleRedirect();
-	bool      _doShot();
-	bool      _outputPixmap(const QPixmap &pixmap);
+	bool _handleRedirect();
+	bool _doShot();
+	bool _outputPixmap(const QPixmap &pixmap);
+	static bool _needsRedirect(int statusCode);
 
 private slots:
 	void doneLoading(bool);

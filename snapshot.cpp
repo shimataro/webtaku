@@ -80,33 +80,29 @@ QTimer *Snapshot::_getTimer()
 
 bool Snapshot::_handleRedirect()
 {
-	// This should ensure that the program never hangs
-	if(m_statusCode == 0)
+	// no redirect
+	if(!_needsRedirect(m_statusCode))
 	{
-		if(m_tries > 5)
-		{
-			qDebug() << "Giving up.";
-			QApplication::quit();
-		}
-		m_tries++;
+		m_tries = 0;
+		return false;
+	}
+
+	// avoid endless redirect loops
+	if(m_tries++ > 5)
+	{
+		qDebug() << "Giving up.";
+		QApplication::quit();
 		return true;
 	}
 
-	// redirect
-	if(m_statusCode == 301 || m_statusCode == 302 || m_statusCode == 303 || m_statusCode == 307)
+	qDebug() << "Redirecting to: " + m_redirectUrl.toString();
+	if(m_page->mainFrame()->url().toString().isEmpty())
 	{
-		m_statusCode = 0;
-		qDebug() << "Redirecting to: " + m_redirectUrl.toString();
-		if(m_page->mainFrame()->url().toString().isEmpty())
-		{
-			qDebug() << "about:blank";
-			m_page->mainFrame()->load(this->m_redirectUrl);
-			qDebug() << "Loading";
-		}
-		return true;
+		qDebug() << "about:blank";
+		m_page->mainFrame()->load(this->m_redirectUrl);
+		qDebug() << "Loading";
 	}
-
-	return false;
+	return true;
 }
 
 bool Snapshot::_doShot()
@@ -137,6 +133,11 @@ bool Snapshot::_outputPixmap(const QPixmap &pixmap)
 		file.open(stdout, QIODevice::WriteOnly);
 		return pixmap.save(&file, qPrintable(m_outputFormat), m_quality);
 	}
+}
+
+bool Snapshot::_needsRedirect(int statusCode)
+{
+	return (statusCode == 301 || statusCode == 302 || statusCode == 303 || statusCode == 307);
 }
 
 
