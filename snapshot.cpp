@@ -84,7 +84,7 @@ bool Snapshot::_outputPixmap(const QPixmap &pixmap)
 	{
 		QFile file;
 		file.open(stdout, QIODevice::WriteOnly);
-		return pixmap.save(&file, m_outputFormat.toStdString().c_str(), m_quality);
+		return pixmap.save(&file, qPrintable(m_outputFormat), m_quality);
 	}
 }
 
