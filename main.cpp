@@ -19,6 +19,8 @@
 #include <iostream>
 #include "snapshot.h"
 
+static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params);
+
 int main(int argc, char *argv[])
 {
 	if(argc < 2)
@@ -30,49 +32,50 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 
-	QUrl    url;
-	QString format = "PPM";
-	QString output = "";
-	QSize   minSize(1024, 768);
-	int     timer = 3;
+	QUrl url;
+	SNAPPARAMS params = {"PPM", "", {1024, 768}, 3, -1};
+	parseParams(argc, argv, url, params);
 
+	Snapshot shot;
+	shot.shot(url, params);
+
+	return a.exec();
+}
+
+static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params)
+{
 	QRegExp regexp_format    ("--format=(\\w+)");
+	QRegExp regexp_output    ("--output=(.*)");
 	QRegExp regexp_min_width ("--min-width=(\\d+)");
 	QRegExp regexp_min_height("--min-height=(\\d+)");
 	QRegExp regexp_timer     ("--timer=(\\d+)");
-	QRegExp regexp_output    ("--output=(.*)");
 
 	for(int i = 0; i < argc; i++)
 	{
 		QString arg = argv[i];
 		if(regexp_format.exactMatch(arg))
 		{
-			format = regexp_format.cap(1);
-		}
-		else if(regexp_min_width.exactMatch(arg))
-		{
-			minSize.setWidth(regexp_min_width.cap(1).toInt());
-		}
-		else if(regexp_min_height.exactMatch(arg))
-		{
-			minSize.setHeight(regexp_min_height.cap(1).toInt());
-		}
-		else if(regexp_timer.exactMatch(arg))
-		{
-			timer = regexp_timer.cap(1).toInt();
+			params.outputFormat = regexp_format.cap(1);
 		}
 		else if(regexp_output.exactMatch(arg))
 		{
-			output = regexp_output.cap(1);
+			params.outputFilename = regexp_output.cap(1);
+		}
+		else if(regexp_min_width.exactMatch(arg))
+		{
+			params.minSize.setWidth(regexp_min_width.cap(1).toInt());
+		}
+		else if(regexp_min_height.exactMatch(arg))
+		{
+			params.minSize.setHeight(regexp_min_height.cap(1).toInt());
+		}
+		else if(regexp_timer.exactMatch(arg))
+		{
+			params.timer_ms = regexp_timer.cap(1).toInt();
 		}
 		else
 		{
 			url = QUrl(arg);
 		}
 	}
-
-	Snapshot shot;
-	shot.shot(url, output, format.toUpper(), minSize, timer);
-
-	return a.exec();
 }

@@ -24,6 +24,15 @@
 
 class CustomWebPage;
 
+struct SNAPPARAMS
+{
+	QString outputFilename;
+	QString outputFormat;
+	QSize   minSize;
+	int     timer_ms;
+	int     quality;
+};
+
 class Snapshot : QObject
 {
 	Q_OBJECT
@@ -32,20 +41,16 @@ class Snapshot : QObject
 	QWebView      *m_view;
 	QTimer        *m_timer;
 
-	QString m_outputFilename;
-	QString m_outputFormat;
-	QSize   m_minSize;
-	int     m_timer_ms;
-	int     m_quality;
-
 	QUrl m_redirectUrl;
 	int  m_statusCode;
 	int  m_tries;
 
+	SNAPPARAMS m_params;
+
 public:
 	Snapshot(QObject *parent = NULL);
 	~Snapshot();
-	void shot(const QUrl &url, const QString &outputFilename, const QString &outputFormat, const QSize &minSize, const int timer_ms = 3, const int quality = -1);
+	void shot(const QUrl &url, const SNAPPARAMS &params);
 
 private:
 	QWebView *_getView();

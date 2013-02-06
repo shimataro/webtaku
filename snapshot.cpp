@@ -37,13 +37,10 @@ Snapshot::~Snapshot()
 	m_view  = NULL;
 	m_timer = NULL;
 }
-void Snapshot::shot(const QUrl &url, const QString &outputFilename, const QString &outputFormat, const QSize &minSize, const int timer_ms, const int quality)
+
+void Snapshot::shot(const QUrl &url, const SNAPPARAMS &params)
 {
-	m_outputFilename = outputFilename;
-	m_outputFormat   = outputFormat;
-	m_minSize        = minSize;
-	m_timer_ms       = timer_ms;
-	m_quality        = quality;
+	m_params = params;
 
 	qDebug() << "Loading fake UI...";
 	m_view  = _getView();
@@ -56,7 +53,7 @@ void Snapshot::shot(const QUrl &url, const QString &outputFilename, const QStrin
 
 	// setup page
 	m_page->mainFrame()->load(url);
-	m_page->setViewportSize(minSize);
+	m_page->setViewportSize(params.minSize);
 	m_page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
 
@@ -68,7 +65,7 @@ QWebView *Snapshot::_getView()
 {
 	QWebView *view = new QWebView;
 	view->setPage(m_page);
-	view->setMinimumSize(m_minSize);
+	view->setMinimumSize(m_params.minSize);
 	return view;
 }
 
@@ -109,9 +106,8 @@ bool Snapshot::_doShot()
 {
 	// resize view
 	const QSize contentsSize  = m_page->mainFrame()->contentsSize();
-	if(m_minSize.width() < contentsSize.width() || m_minSize.height() < contentsSize.height())
+	if(m_params.minSize.width() < contentsSize.width() || m_params.minSize.height() < contentsSize.height())
 	{
-		m_minSize = contentsSize;
 		m_view->setMinimumSize(contentsSize);
 		m_view->repaint();
 	}
@@ -123,15 +119,15 @@ bool Snapshot::_doShot()
 
 bool Snapshot::_outputPixmap(const QPixmap &pixmap)
 {
-	if(!m_outputFilename.isEmpty())
+	if(!m_params.outputFilename.isEmpty())
 	{
-		return pixmap.save(m_outputFilename, NULL, m_quality);
+		return pixmap.save(m_params.outputFilename, NULL, m_params.quality);
 	}
 	else
 	{
 		QFile file;
 		file.open(stdout, QIODevice::WriteOnly);
-		return pixmap.save(&file, qPrintable(m_outputFormat), m_quality);
+		return pixmap.save(&file, qPrintable(m_params.outputFormat), m_params.quality);
 	}
 }
 
@@ -147,7 +143,7 @@ bool Snapshot::_needsRedirect(int statusCode)
 void Snapshot::doneLoading(bool)
 {
 	// A reasonable waiting time for any script to execute
-	m_timer->start(m_timer_ms);
+	m_timer->start(m_params.timer_ms);
 }
 
 void Snapshot::doneWaiting()
