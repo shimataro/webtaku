@@ -50,6 +50,8 @@ public:
 private:
 	QWebView *_getView();
 	QTimer   *_getTimer();
+	bool      _handleRedirect();
+	bool      _doShot();
 	bool      _outputPixmap(const QPixmap &pixmap);
 
 private slots:

@@ -60,6 +60,10 @@ void Snapshot::shot(const QUrl &url, const QString &outputFilename, const QStrin
 	m_page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// private methods
+
 QWebView *Snapshot::_getView()
 {
 	QWebView *view = new QWebView;
@@ -72,6 +76,53 @@ QTimer *Snapshot::_getTimer()
 {
 	QTimer *timer = new QTimer(this);
 	return timer;
+}
+
+bool Snapshot::_handleRedirect()
+{
+	// This should ensure that the program never hangs
+	if(m_statusCode == 0)
+	{
+		if(m_tries > 5)
+		{
+			qDebug() << "Giving up.";
+			QApplication::quit();
+		}
+		m_tries++;
+		return true;
+	}
+
+	// redirect
+	if(m_statusCode == 301 || m_statusCode == 302 || m_statusCode == 303 || m_statusCode == 307)
+	{
+		m_statusCode = 0;
+		qDebug() << "Redirecting to: " + m_redirectUrl.toString();
+		if(m_page->mainFrame()->url().toString().isEmpty())
+		{
+			qDebug() << "about:blank";
+			m_page->mainFrame()->load(this->m_redirectUrl);
+			qDebug() << "Loading";
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool Snapshot::_doShot()
+{
+	// resize view
+	const QSize contentsSize  = m_page->mainFrame()->contentsSize();
+	if(m_minSize.width() < contentsSize.width() || m_minSize.height() < contentsSize.height())
+	{
+		m_minSize = contentsSize;
+		m_view->setMinimumSize(contentsSize);
+		m_view->repaint();
+	}
+
+	// output image data
+	QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentsSize.width(), contentsSize.height());
+	return _outputPixmap(pix);
 }
 
 bool Snapshot::_outputPixmap(const QPixmap &pixmap)
@@ -88,6 +139,10 @@ bool Snapshot::_outputPixmap(const QPixmap &pixmap)
 	}
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// event handler
+
 void Snapshot::doneLoading(bool)
 {
 	// A reasonable waiting time for any script to execute
@@ -96,44 +151,12 @@ void Snapshot::doneLoading(bool)
 
 void Snapshot::doneWaiting()
 {
-	// This should ensure that the program never hangs
-	if(m_statusCode == 0)
+	if(_handleRedirect())
 	{
-		if(m_tries > 5)
-		{
-			qDebug() << "Giving up.";
-			QApplication::quit();
-		}
-		m_tries++;
 		return;
 	}
 
-	// redirect
-	if(m_statusCode == 301 || m_statusCode == 302 || m_statusCode == 303 || m_statusCode == 307)
-	{
-		m_statusCode = 0;
-		qDebug() << "Redirecting to: " + m_redirectUrl.toString();
-		if(m_page->mainFrame()->url().toString().isEmpty())
-		{
-			qDebug() << "about:blank";
-			m_page->mainFrame()->load(this->m_redirectUrl);
-			qDebug() << "Loading";
-		}
-		return;
-	}
-
-	// resize view
-	const QSize contentsSize  = m_page->mainFrame()->contentsSize();
-	if(m_minSize.width() < contentsSize.width() || m_minSize.height() < contentsSize.height())
-	{
-		m_minSize = contentsSize;
-		m_view->setMinimumSize(contentsSize);
-		m_view->repaint();
-	}
-
-	// output image data
-	QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentsSize.width(), contentsSize.height());
-	if(!_outputPixmap(pix))
+	if(!_doShot())
 	{
 		qDebug() << "Failed to save image.";
 	}
