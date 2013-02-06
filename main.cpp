@@ -19,30 +19,36 @@
 #include <iostream>
 #include "snapshot.h"
 
-static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params);
+static void parseParams(const QStringList &arguments, QUrl &url, SNAPPARAMS &params);
 
 int main(int argc, char *argv[])
 {
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--timer=<milliseconds>] <url>" << std::endl;
+		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--timer=<milliseconds>] <url>" << std::endl;
 		return -1;
 	}
 
-	QApplication a(argc, argv);
+	QApplication app(argc, argv);
 
 	QUrl url;
 	SNAPPARAMS params = {"PPM", "", "", QSize(1024, 768), 3, -1};
-	parseParams(argc, argv, url, params);
+	parseParams(app.arguments(), url, params);
 
 	Snapshot shot;
 	shot.shot(url, params);
 
-	return a.exec();
+	return app.exec();
 }
 
-static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params)
+/**
+ * parse command line parameters
+ * @param arguments [in]parameters to be parsed (app.arguments())
+ * @param url       [out]target URL
+ * @param params    [out]parsed parameters
+ */
+static void parseParams(const QStringList &arguments, QUrl &url, SNAPPARAMS &params)
 {
 	QRegExp regexp_format    ("--format=(\\w+)");
 	QRegExp regexp_output    ("--output=(.*)");
@@ -51,36 +57,39 @@ static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params)
 	QRegExp regexp_min_height("--min-height=(\\d+)");
 	QRegExp regexp_timer     ("--timer=(\\d+)");
 
-	for(int i = 0; i < argc; i++)
+	for(QStringList::const_iterator p = arguments.begin(); p != arguments.end(); p++)
 	{
-		QString arg = argv[i];
+		QString arg = *p;
 		if(regexp_format.exactMatch(arg))
 		{
 			params.outputFormat = regexp_format.cap(1);
+			continue;
 		}
-		else if(regexp_output.exactMatch(arg))
+		if(regexp_output.exactMatch(arg))
 		{
 			params.outputFilename = regexp_output.cap(1);
+			continue;
 		}
-		else if(regexp_user_agent.exactMatch(arg))
+		if(regexp_user_agent.exactMatch(arg))
 		{
 			params.userAgent = regexp_user_agent.cap(1);
+			continue;
 		}
-		else if(regexp_min_width.exactMatch(arg))
+		if(regexp_min_width.exactMatch(arg))
 		{
 			params.minSize.setWidth(regexp_min_width.cap(1).toInt());
+			continue;
 		}
-		else if(regexp_min_height.exactMatch(arg))
+		if(regexp_min_height.exactMatch(arg))
 		{
 			params.minSize.setHeight(regexp_min_height.cap(1).toInt());
+			continue;
 		}
-		else if(regexp_timer.exactMatch(arg))
+		if(regexp_timer.exactMatch(arg))
 		{
 			params.timer_ms = regexp_timer.cap(1).toInt();
+			continue;
 		}
-		else
-		{
-			url = QUrl(arg);
-		}
+		url = QUrl(arg);
 	}
 }
