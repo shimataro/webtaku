@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	SNAPPARAMS params = {"PPM", "", "", QSize(1024, 768), 3, -1};
+	SNAPPARAMS params = {"", "PPM", "", QSize(1024, 768), 3, -1};
 	parseParams(app.arguments(), url, params);
 
 	Snapshot shot;
