@@ -24,7 +24,7 @@
 
 `xvfb-run --server-args="-screen 0, 1024x768x24" wiget --output=output.png "http://example.com/"`
 
-### if "--output" option is omitted, image data will output to stdout
+### if "--output" option is omitted, image data will be dumped into stdout
 
 `wiget --format=JPG "http://example.com/" >output.jpg`
 
