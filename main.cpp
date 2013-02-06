@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 	QUrl url;
-	SNAPPARAMS params = {"PPM", "", {1024, 768}, 3, -1};
+	SNAPPARAMS params = {"PPM", "", "", QSize(1024, 768), 3, -1};
 	parseParams(argc, argv, url, params);
 
 	Snapshot shot;
@@ -46,6 +46,7 @@ static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params)
 {
 	QRegExp regexp_format    ("--format=(\\w+)");
 	QRegExp regexp_output    ("--output=(.*)");
+	QRegExp regexp_user_agent("--user-agent=(.*)");
 	QRegExp regexp_min_width ("--min-width=(\\d+)");
 	QRegExp regexp_min_height("--min-height=(\\d+)");
 	QRegExp regexp_timer     ("--timer=(\\d+)");
@@ -60,6 +61,10 @@ static void parseParams(int argc, char *argv[], QUrl &url, SNAPPARAMS &params)
 		else if(regexp_output.exactMatch(arg))
 		{
 			params.outputFilename = regexp_output.cap(1);
+		}
+		else if(regexp_user_agent.exactMatch(arg))
+		{
+			params.userAgent = regexp_user_agent.cap(1);
 		}
 		else if(regexp_min_width.exactMatch(arg))
 		{

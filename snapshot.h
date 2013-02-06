@@ -28,6 +28,7 @@ struct SNAPPARAMS
 {
 	QString outputFilename;
 	QString outputFormat;
+	QString userAgent;
 	QSize   minSize;
 	int     timer_ms;
 	int     quality;

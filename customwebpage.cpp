@@ -18,9 +18,18 @@
 
 CustomWebPage::CustomWebPage(QObject *parent) : QWebPage(parent) { }
 
-QString CustomWebPage::userAgentForUrl(const QUrl & /* url */) const
+void CustomWebPage::setUserAgent(const QString &userAgent)
 {
-	return QString("Wiget - Snapshot tool. https://github.com/shimataro/wiget");
+	m_userAgent = userAgent;
+}
+
+QString CustomWebPage::userAgentForUrl(const QUrl &url) const
+{
+	if(!m_userAgent.isEmpty())
+	{
+		return m_userAgent;
+	}
+	return QWebPage::userAgentForUrl(url);
 }
 
 void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QString & /* msg */)

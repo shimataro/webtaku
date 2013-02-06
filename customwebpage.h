@@ -27,6 +27,11 @@ public:
 	CustomWebPage(QObject *parent = 0);
 	QString userAgentForUrl(const QUrl &url) const;
 
+	void setUserAgent(const QString &userAgent);
+
+private:
+	QString m_userAgent;
+
 protected:
 	void javaScriptAlert(QWebFrame *originatingFrame, const QString &msg);
 	bool javaScriptConfirm(QWebFrame *originatingFrame, const QString &msg);

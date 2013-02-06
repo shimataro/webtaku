@@ -30,17 +30,15 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent)
 
 Snapshot::~Snapshot()
 {
-	delete m_page;
-	delete m_view;
-	delete m_timer;
-	m_page  = NULL;
-	m_view  = NULL;
-	m_timer = NULL;
+	delete m_page; m_page  = NULL;
+	delete m_view; m_view  = NULL;
+	delete m_timer; m_timer = NULL;
 }
 
 void Snapshot::shot(const QUrl &url, const SNAPPARAMS &params)
 {
 	m_params = params;
+	m_page->setUserAgent(params.userAgent);
 
 	qDebug() << "Loading fake UI...";
 	m_view  = _getView();

@@ -23,8 +23,8 @@ CONFIG += console warn_on
 CONFIG -= app_bundle
 
 QMAKE_CFLAGS   += -ansi
-#QMAKE_CXXFLAGS += -ansi
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -ansi
+#QMAKE_CXXFLAGS += -std=c++0x
 
 CONFIG(debug, debug|release) {
 	QMAKE_CFLAGS   += -O0
