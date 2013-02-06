@@ -24,10 +24,8 @@
 class CustomWebPage : public QWebPage
 {
 public:
-	CustomWebPage(QObject *parent = 0);
+	CustomWebPage(const QString &userAgent, QObject *parent = NULL);
 	QString userAgentForUrl(const QUrl &url) const;
-
-	void setUserAgent(const QString &userAgent);
 
 private:
 	QString m_userAgent;

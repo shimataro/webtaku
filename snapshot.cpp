@@ -19,59 +19,68 @@
 #include "snapshot.h"
 #include "customwebpage.h"
 
-#define countof(a) (sizeof(a)/sizeof(a[0]))
 
 Snapshot::Snapshot(QObject *parent) : QObject(parent)
 {
-	m_page       = new CustomWebPage;
 	m_statusCode = 0;
 	m_tries      = 0;
+
+	m_qWebPage  = NULL;
+	m_qWebView  = NULL;
+	m_qTimer = NULL;
 }
 
 Snapshot::~Snapshot()
 {
-	delete m_page; m_page  = NULL;
-	delete m_view; m_view  = NULL;
-	delete m_timer; m_timer = NULL;
+	delete m_qWebPage; m_qWebPage  = NULL;
+	delete m_qWebView; m_qWebView  = NULL;
+	delete m_qTimer; m_qTimer = NULL;
 }
 
 void Snapshot::shot(const QUrl &url, const SNAPPARAMS &params)
 {
 	m_params = params;
-	m_page->setUserAgent(params.userAgent);
 
 	qDebug() << "Loading fake UI...";
-	m_view  = _getView();
-	m_timer = _getTimer();
+	m_qWebPage = _getWebPage();
+	m_qWebView = _getWebView();
+	m_qTimer   = _getTimer();
 
-	connect(m_timer, SIGNAL(timeout()), SLOT(doneWaiting()));
-	connect(m_page->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
-	connect(m_page, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
-	connect(m_page->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+	connect(m_qTimer, SIGNAL(timeout()), SLOT(doneWaiting()));
+	connect(m_qWebPage->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
+	connect(m_qWebPage, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
+	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 
 	// setup page
-	m_page->mainFrame()->load(url);
-	m_page->setViewportSize(params.minSize);
-	m_page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	m_qWebPage->mainFrame()->load(url);
+	m_qWebPage->setViewportSize(params.minSize);
+	m_qWebPage->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
 
-QWebView *Snapshot::_getView()
+QWebPage *Snapshot::_getWebPage() const
 {
-	QWebView *view = new QWebView;
-	view->setPage(m_page);
-	view->setMinimumSize(m_params.minSize);
-	return view;
+	QWebPage *qWebPage = new CustomWebPage(m_params.userAgent);
+	return qWebPage;
+}
+
+QWebView *Snapshot::_getWebView() const
+{
+	QWebView *qWebView = new QWebView;
+	qWebView->setPage(m_qWebPage);
+	qWebView->setMinimumSize(m_params.minSize);
+	return qWebView;
 }
 
 QTimer *Snapshot::_getTimer()
 {
-	QTimer *timer = new QTimer(this);
-	return timer;
+	QTimer *qTimer = new QTimer(this);
+	return qTimer;
 }
+
 
 bool Snapshot::_handleRedirect()
 {
@@ -91,10 +100,10 @@ bool Snapshot::_handleRedirect()
 	}
 
 	qDebug() << "Redirecting to: " + m_redirectUrl.toString();
-	if(m_page->mainFrame()->url().toString().isEmpty())
+	if(m_qWebPage->mainFrame()->url().toString().isEmpty())
 	{
 		qDebug() << "about:blank";
-		m_page->mainFrame()->load(this->m_redirectUrl);
+		m_qWebPage->mainFrame()->load(this->m_redirectUrl);
 		qDebug() << "Loading";
 	}
 	return true;
@@ -103,19 +112,19 @@ bool Snapshot::_handleRedirect()
 bool Snapshot::_doShot()
 {
 	// resize view
-	const QSize contentsSize  = m_page->mainFrame()->contentsSize();
+	const QSize contentsSize  = m_qWebPage->mainFrame()->contentsSize();
 	if(m_params.minSize.width() < contentsSize.width() || m_params.minSize.height() < contentsSize.height())
 	{
-		m_view->setMinimumSize(contentsSize);
-		m_view->repaint();
+		m_qWebView->setMinimumSize(contentsSize);
+		m_qWebView->repaint();
 	}
 
 	// output image data
-	QPixmap pix = QPixmap::grabWidget(m_view, 0, 0, contentsSize.width(), contentsSize.height());
+	QPixmap pix = QPixmap::grabWidget(m_qWebView, 0, 0, contentsSize.width(), contentsSize.height());
 	return _outputPixmap(pix);
 }
 
-bool Snapshot::_outputPixmap(const QPixmap &pixmap)
+bool Snapshot::_outputPixmap(const QPixmap &pixmap) const
 {
 	if(!m_params.outputFilename.isEmpty())
 	{
@@ -141,7 +150,7 @@ bool Snapshot::_needsRedirect(int statusCode)
 void Snapshot::doneLoading(bool)
 {
 	// A reasonable waiting time for any script to execute
-	m_timer->start(m_params.timer_ms);
+	m_qTimer->start(m_params.timer_ms);
 }
 
 void Snapshot::doneWaiting()

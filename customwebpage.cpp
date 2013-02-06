@@ -16,9 +16,7 @@
 
 #include "customwebpage.h"
 
-CustomWebPage::CustomWebPage(QObject *parent) : QWebPage(parent) { }
-
-void CustomWebPage::setUserAgent(const QString &userAgent)
+CustomWebPage::CustomWebPage(const QString &userAgent, QObject *parent) : QWebPage(parent)
 {
 	m_userAgent = userAgent;
 }

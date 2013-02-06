@@ -22,8 +22,6 @@
 #include <QPainter>
 #include <QTimer>
 
-class CustomWebPage;
-
 struct SNAPPARAMS
 {
 	QString outputFilename;
@@ -38,9 +36,9 @@ class Snapshot : QObject
 {
 	Q_OBJECT
 
-	CustomWebPage *m_page;
-	QWebView      *m_view;
-	QTimer        *m_timer;
+	QWebPage *m_qWebPage;
+	QWebView *m_qWebView;
+	QTimer   *m_qTimer;
 
 	QUrl m_redirectUrl;
 	int  m_statusCode;
@@ -54,11 +52,13 @@ public:
 	void shot(const QUrl &url, const SNAPPARAMS &params);
 
 private:
-	QWebView *_getView();
+	QWebPage *_getWebPage() const;
+	QWebView *_getWebView() const;
 	QTimer   *_getTimer();
+
 	bool _handleRedirect();
 	bool _doShot();
-	bool _outputPixmap(const QPixmap &pixmap);
+	bool _outputPixmap(const QPixmap &pixmap) const;
 	static bool _needsRedirect(int statusCode);
 
 private slots:
