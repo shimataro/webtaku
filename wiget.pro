@@ -2,6 +2,7 @@
 
 QT += core webkit network
 
+PROJECT  = wiget
 LANGUAGE = C++
 TEMPLATE = app
 #TARGET   = <target_file>
@@ -17,7 +18,6 @@ HEADERS += \
 	customwebpage.h
 
 
-#######################################
 # configuration
 CONFIG += console warn_on
 CONFIG -= app_bundle
@@ -33,17 +33,15 @@ CONFIG(debug, debug|release) {
 CONFIG(release, debug|release) {
 	QMAKE_CFLAGS   += -Ofast
 	QMAKE_CXXFLAGS += -Ofast
-}
 
-
-#######################################
 # installation
-target.path  = /usr/local/bin
-target.files = $${TARGET}
-#target.extra = <commands>
+	target.path  = /usr/local/bin
+	target.files = $${TARGET}
+#	target.extra = <commands>
 
-source.path  = /usr/local/src/$${TARGET}
-source.files = *.cpp *.h *.pro LICENSE README.md
-#source.extra = <commands>
+	source.path  = /usr/local/src/$${PROJECT}
+	source.files = *.cpp *.h *.pro LICENSE README.md
+#	source.extra = <commands>
 
-INSTALLS += target source
+	INSTALLS += target source
+}

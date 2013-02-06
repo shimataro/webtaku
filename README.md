@@ -22,16 +22,16 @@
 
 ### xvfb is only necessary for running wiget on a headless server (i.e. a server without a GUI or even a graphics card)
 
-`xvfb-run --server-args="-screen 0, 1024x768x24" ./wiget --format=PNG "http://example.com/" >output.png`
+`xvfb-run --server-args="-screen 0, 1024x768x24" wiget --output=output.png "http://example.com/"`
 
-### if "--output" option is specified, file format is determined by extension of output file ("--format" option is ignored)
+### if "--output" option is omitted, image data will output to stdout
 
-`./wiget --output=output.png "http://example.com/"`
+`wiget --format=JPG "http://example.com/" >output.jpg`
 
 ### if "--format" and "--output" options are omitted, file format will be "PPM"
 
-`./wiget "http://example.com/" >output.ppm`
+`wiget "http://example.com/" >output.ppm`
 
 ### you can resize and crop by ImageMagick as below
 
-`./wiget "http://example.com/" | convert -resize 320 -crop 320x240+0+0 - thumb.png`
+`wiget "http://example.com/" | convert -resize 320 -crop 320x240+0+0 - thumb.png`
