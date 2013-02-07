@@ -20,13 +20,14 @@
 #include "snapshot.h"
 
 static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS &params);
+static void silentMsgHandler(QtMsgType type, const char *msg);
 
 int main(int argc, char *argv[])
 {
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--min-size=<minimum-width>x<minimum-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests] <url>" << std::endl;
+		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--min-size=<minimum-width>x<minimum-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests] [--silent] <url>" << std::endl;
 		return -1;
 	}
 
@@ -59,6 +60,7 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 	QRegExp regexp_crop        ("--crop");
 	QRegExp regexp_timer       ("--timer=(\\d+)");
 	QRegExp regexp_max_requests("--max-requests=(\\d+)");
+	QRegExp regexp_silent      ("--silent");
 
 	for(QStringList::const_iterator p = arguments.begin(); p != arguments.end(); p++)
 	{
@@ -109,6 +111,24 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 			params.maxRequests = regexp_max_requests.cap(1).toInt();
 			continue;
 		}
+		if(regexp_silent.exactMatch(arg))
+		{
+			qInstallMsgHandler(silentMsgHandler);
+			continue;
+		}
 		url = QUrl(arg);
+	}
+}
+
+/**
+ * silent message handler
+ * @param type [in]message type (debug/warning/critical/fatal)
+ * @param msg  [in]message
+ */
+static void silentMsgHandler(QtMsgType type, const char * /* msg */)
+{
+	if(type == QtFatalMsg)
+	{
+		abort();
 	}
 }
