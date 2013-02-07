@@ -1,19 +1,11 @@
-//    Wiget - Website to image render tool (forked from Webimage)
-//    Copyright (C) 2013 Shimataro
-
-//    This program is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
-
-//    This program is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-
-//    You should have received a copy of the GNU General Public License
-//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * Customized QWebPage
+ * @author shimataro
+ * <ul>
+ *  <li>customized user-agent</li>
+ *  <li>ignore JavaScript alert/confirm</li>
+ * </ul>
+ */
 #ifndef CUSTOMWEBPAGE_H
 #define CUSTOMWEBPAGE_H
 
@@ -25,12 +17,12 @@ class CustomWebPage : public QWebPage
 {
 public:
 	CustomWebPage(const QString &userAgent, QObject *parent = NULL);
-	QString userAgentForUrl(const QUrl &url) const;
 
 private:
 	QString m_userAgent;
 
 protected:
+	QString userAgentForUrl(const QUrl &url) const;
 	void javaScriptAlert(QWebFrame *originatingFrame, const QString &msg);
 	bool javaScriptConfirm(QWebFrame *originatingFrame, const QString &msg);
 
