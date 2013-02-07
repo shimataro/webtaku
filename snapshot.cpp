@@ -22,8 +22,7 @@
 
 Snapshot::Snapshot(QObject *parent) : QObject(parent)
 {
-	m_statusCode = 0;
-	m_tries      = 0;
+	m_requestCount = 0;
 
 	m_qWebPage  = NULL;
 	m_qWebView  = NULL;
@@ -37,7 +36,7 @@ Snapshot::~Snapshot()
 	delete m_qTimer; m_qTimer = NULL;
 }
 
-void Snapshot::shot(const QUrl &url, const SNAPPARAMS &params)
+void Snapshot::shot(const QUrl &url, const SNAPSHOTPARAMS &params)
 {
 	m_params = params;
 
@@ -81,33 +80,6 @@ QTimer *Snapshot::_getTimer()
 	return qTimer;
 }
 
-
-bool Snapshot::_handleRedirect()
-{
-	// no redirect
-	if(!_needsRedirect(m_statusCode))
-	{
-		m_tries = 0;
-		return false;
-	}
-
-	// avoid endless redirect loops
-	if(m_tries++ > 5)
-	{
-		qDebug() << "Giving up.";
-		QApplication::quit();
-		return true;
-	}
-
-	qDebug() << "Redirecting to: " + m_redirectUrl.toString();
-	if(m_qWebPage->mainFrame()->url().toString().isEmpty())
-	{
-		qDebug() << "about:blank";
-		m_qWebPage->mainFrame()->load(this->m_redirectUrl);
-		qDebug() << "Loading";
-	}
-	return true;
-}
 
 bool Snapshot::_doShot()
 {
@@ -160,30 +132,28 @@ void Snapshot::doneLoading(bool)
 
 void Snapshot::doneWaiting()
 {
-	if(_handleRedirect())
+	if(!_doShot())
 	{
+		qCritical() << "Fatal error: failed to save image";
+		QApplication::exit(SSS_FAILEDTOSAVE);
 		return;
 	}
 
-	if(!_doShot())
-	{
-		qDebug() << "Failed to save image.";
-	}
-
+	qDebug() << "Done.";
 	QApplication::quit();
 }
 
 void Snapshot::gotReply(QNetworkReply *reply)
 {
-	if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")))
-	{
-		qDebug() << "Got reply " + reply->url().toString() + " - " + reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString() + " - " + reply->header(QNetworkRequest::ContentTypeHeader).toString();
-	}
+	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
+	const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
+	qDebug() << "Got reply " + reply->url().toString() + " - " + statusCode + " - " + contentType;
 
-	if(reply->header(QNetworkRequest::ContentTypeHeader).toString().contains(QString("text/html")) && m_statusCode != 200)
+	if(m_requestCount++ > m_params.maxRequests)
 	{
-		m_statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-		m_redirectUrl = QUrl(reply->header(QNetworkRequest::LocationHeader).toUrl());
+		qCritical() << "Fatal error: too many requests";
+		QApplication::exit(SSS_TOOMANYREQUESTS);
+		return;
 	}
 }
 

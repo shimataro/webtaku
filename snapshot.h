@@ -22,7 +22,15 @@
 #include <QPainter>
 #include <QTimer>
 
-struct SNAPPARAMS
+#define MAX_REQUESTS 1000
+
+enum SNAPSHOTSTATUS
+{
+	SSS_TOOMANYREQUESTS = 1,
+	SSS_FAILEDTOSAVE    = 2,
+};
+
+struct SNAPSHOTPARAMS
 {
 	QString outputFilename;
 	QString outputFormat;
@@ -30,6 +38,7 @@ struct SNAPPARAMS
 	QSize   minSize;
 	bool    crop;
 	int     timer_ms;
+	size_t  maxRequests;
 	int     quality;
 };
 
@@ -41,23 +50,20 @@ class Snapshot : QObject
 	QWebView *m_qWebView;
 	QTimer   *m_qTimer;
 
-	QUrl m_redirectUrl;
-	int  m_statusCode;
-	int  m_tries;
+	size_t m_requestCount;
 
-	SNAPPARAMS m_params;
+	SNAPSHOTPARAMS m_params;
 
 public:
 	Snapshot(QObject *parent = NULL);
 	~Snapshot();
-	void shot(const QUrl &url, const SNAPPARAMS &params);
+	void shot(const QUrl &url, const SNAPSHOTPARAMS &params);
 
 private:
 	QWebPage *_getWebPage() const;
 	QWebView *_getWebView() const;
 	QTimer   *_getTimer();
 
-	bool _handleRedirect();
 	bool _doShot();
 	bool _outputPixmap(const QPixmap &pixmap) const;
 	static bool _needsRedirect(int statusCode);
