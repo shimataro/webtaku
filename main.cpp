@@ -26,14 +26,14 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--timer=<milliseconds>] <url>" << std::endl;
+		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--min-size=<minimum-width>x<minimum-height>] [--crop] [--timer=<milliseconds>] <url>" << std::endl;
 		return -1;
 	}
 
 	QApplication app(argc, argv);
 
 	QUrl url;
-	SNAPPARAMS params = {"", "PPM", "", QSize(1024, 768), 3, -1};
+	SNAPPARAMS params = {"", "PPM", "", QSize(1024, 768), false, 3, -1};
 	parseParams(app.arguments(), url, params);
 
 	Snapshot shot;
@@ -55,6 +55,8 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPPARAMS &par
 	QRegExp regexp_user_agent("--user-agent=(.*)");
 	QRegExp regexp_min_width ("--min-width=(\\d+)");
 	QRegExp regexp_min_height("--min-height=(\\d+)");
+	QRegExp regexp_min_size  ("--min-size=(\\d+)x(\\d+)");
+	QRegExp regexp_crop      ("--crop");
 	QRegExp regexp_timer     ("--timer=(\\d+)");
 
 	for(QStringList::const_iterator p = arguments.begin(); p != arguments.end(); p++)
@@ -83,6 +85,17 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPPARAMS &par
 		if(regexp_min_height.exactMatch(arg))
 		{
 			params.minSize.setHeight(regexp_min_height.cap(1).toInt());
+			continue;
+		}
+		if(regexp_min_size.exactMatch(arg))
+		{
+			params.minSize.setWidth (regexp_min_size.cap(1).toInt());
+			params.minSize.setHeight(regexp_min_size.cap(2).toInt());
+			continue;
+		}
+		if(regexp_crop.exactMatch(arg))
+		{
+			params.crop = true;
 			continue;
 		}
 		if(regexp_timer.exactMatch(arg))

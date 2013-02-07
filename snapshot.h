@@ -28,6 +28,7 @@ struct SNAPPARAMS
 	QString outputFormat;
 	QString userAgent;
 	QSize   minSize;
+	bool    crop;
 	int     timer_ms;
 	int     quality;
 };

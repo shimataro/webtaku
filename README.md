@@ -32,6 +32,16 @@
 
 `wiget "http://example.com/" >output.ppm`
 
+### you can specify minimum viewport size (default is 1024x768)
+
+`wiget --min-width=1200 "http://example.com/" >output.ppm`  
+`wiget --min-height=800 "http://example.com/" >output.ppm`  
+`wiget --min-size=1200x800 "http://example.com/" >output.ppm`  
+
+### you can crop image by minimum viewport size
+
+`wiget --crop "http://example.com/" >output.ppm`
+
 ### you can resize and crop by ImageMagick as below
 
 `wiget "http://example.com/" | convert -resize 320 -crop 320x240+0+0 - thumb.png`

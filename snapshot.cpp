@@ -111,16 +111,21 @@ bool Snapshot::_handleRedirect()
 
 bool Snapshot::_doShot()
 {
-	// resize view
-	const QSize contentsSize  = m_qWebPage->mainFrame()->contentsSize();
-	if(m_params.minSize.width() < contentsSize.width() || m_params.minSize.height() < contentsSize.height())
+	QSize size = m_params.minSize;
+	if(!m_params.crop)
 	{
-		m_qWebView->setMinimumSize(contentsSize);
-		m_qWebView->repaint();
+		// resize view
+		const QSize contentsSize  = m_qWebPage->mainFrame()->contentsSize();
+		if(size.width() < contentsSize.width() || size.height() < contentsSize.height())
+		{
+			size = contentsSize;
+			m_qWebView->setMinimumSize(size);
+			m_qWebView->repaint();
+		}
 	}
 
 	// output image data
-	QPixmap pix = QPixmap::grabWidget(m_qWebView, 0, 0, contentsSize.width(), contentsSize.height());
+	QPixmap pix = QPixmap::grabWidget(m_qWebView, 0, 0, size.width(), size.height());
 	return _outputPixmap(pix);
 }
 
