@@ -1,10 +1,10 @@
 # Setup Instructions
 
 ## install the required packages
-`sudo apt-get install -y libqtwebkit-dev libicu-dev`
+`sudo apt-get -y install libqtwebkit-dev libicu-dev`  
 
 ## install MS fonts and Japanese fonts
-`sudo apt-get install -y ttf-mscorefonts-installer ttf-umefont`
+`sudo apt-get -y install ttf-mscorefonts-installer ttf-umefont`  
 
 ## build & install
 `git clone https://github.com/shimataro/wiget.git`  
@@ -54,11 +54,16 @@
 (example: iPad screenshot)  
 `wiget http://example.com/ --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-width=1024 --min-height=768 >output.ppm`  
 
-## with external tools
+## advanced usage
+
+### creating thumbnail
+`wiget --min-size=1200x900 --crop --scaled-size=320x240 --output=output.png http://example.com/`  
+
+## with external tools...
 
 ### when X server is not running, use virtual frame buffer
 (use "--output" option because xvfb-run redirects stderr to stdout)  
-`sudo apt-get install -y xvfb`  
+`sudo apt-get -y install xvfb`  
 `xvfb-run --server-args="-screen 0, 1024x768x24" wiget --output=output.png "http://example.com/"`  
 
 ### for more complex conversion, use ImageMagick as below
