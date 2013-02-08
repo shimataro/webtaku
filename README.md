@@ -1,10 +1,15 @@
 # Setup Instructions
 
-## install the required packages
+## install the packages
+
+### required packages
 `sudo apt-get -y install libqtwebkit-dev libicu-dev`  
 
-## install MS fonts and Japanese fonts
+### fonts
 `sudo apt-get -y install ttf-mscorefonts-installer ttf-umefont`  
+
+### to disappear message - (wiget:26117): Gtk-WARNING **: Unable to locate theme engine in module_path: "pixmap"
+`sudo apt-get -y install gtk2-engines-pixbuf`
 
 ## build & install
 `git clone https://github.com/shimataro/wiget.git`  
