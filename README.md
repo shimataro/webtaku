@@ -18,10 +18,9 @@
 
 # Usage
 
-## create image
+## basic usage
 
-### basic usage
-(image data will be dumped into stdout, and default file format is PPM)  
+### dump image data into stdout, and default file format is PPM
 `wiget "http://example.com/" >output.ppm`  
 
 ### "--format" to specify file format
