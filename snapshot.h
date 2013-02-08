@@ -22,6 +22,7 @@ struct SNAPSHOTPARAMS
 	QString outputFormat;
 	QString userAgent;
 	QSize   minSize;
+	QSize   scaledSize;
 	bool    crop;
 	int     timer_ms;
 	size_t  maxRequests;

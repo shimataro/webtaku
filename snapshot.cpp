@@ -18,8 +18,8 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent)
 
 Snapshot::~Snapshot()
 {
-	delete m_qWebPage; m_qWebPage  = NULL;
-	delete m_qWebView; m_qWebView  = NULL;
+	delete m_qWebPage; m_qWebPage = NULL;
+	delete m_qWebView; m_qWebView = NULL;
 	delete m_qTimer; m_qTimer = NULL;
 }
 
@@ -83,8 +83,27 @@ bool Snapshot::_doShot()
 		}
 	}
 
-	// output image data
+	// get image data
 	QPixmap pix = QPixmap::grabWidget(m_qWebView, 0, 0, size.width(), size.height());
+
+	// scale
+	const QSize &scaledSize = m_params.scaledSize;
+	if(!scaledSize.isNull())
+	{
+		if(scaledSize.width() == 0)
+		{
+			pix = pix.scaledToHeight(scaledSize.height(), Qt::SmoothTransformation);
+		}
+		else if(scaledSize.height() == 0)
+		{
+			pix = pix.scaledToWidth (scaledSize.width() , Qt::SmoothTransformation);
+		}
+		else
+		{
+			pix = pix.scaled(scaledSize , Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		}
+	}
+
 	return _outputPixmap(pix);
 }
 

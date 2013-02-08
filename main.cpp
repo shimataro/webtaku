@@ -1,5 +1,6 @@
 /**
  * main function
+ * @author shimataro
  */
 #include <qglobal.h>
 #include <QApplication>
@@ -14,14 +15,14 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-width=<minimum-width>] [--min-height=<minimun-height>] [--min-size=<minimum-width>x<minimum-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests] [--silent] <url>" << std::endl;
+		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-size=<minimum-width>x<minimum-height>] [--scaled-size=<scaled-width>x<scaled-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests] [--silent] <url>" << std::endl;
 		return -1;
 	}
 
 	QApplication app(argc, argv);
 
 	QUrl url;
-	SNAPSHOTPARAMS params = {"", "PPM", "", QSize(1024, 768), false, 3, 1024, -1};
+	SNAPSHOTPARAMS params = {"", "PPM", "", QSize(1024, 768), QSize(0, 0), false, 3, 1024, -1};
 	parseParams(app.arguments(), url, params);
 
 	Snapshot shot;
@@ -41,9 +42,8 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 	QRegExp regexp_format      ("--format=(\\w+)");
 	QRegExp regexp_output      ("--output=(.*)");
 	QRegExp regexp_user_agent  ("--user-agent=(.*)");
-	QRegExp regexp_min_width   ("--min-width=(\\d+)");
-	QRegExp regexp_min_height  ("--min-height=(\\d+)");
-	QRegExp regexp_min_size    ("--min-size=(\\d+)x(\\d+)");
+	QRegExp regexp_min_size    ("--min-size=(\\d+)?x(\\d+)?");
+	QRegExp regexp_scaled_size ("--scaled-size=(\\d+)?x(\\d+)?");
 	QRegExp regexp_crop        ("--crop");
 	QRegExp regexp_timer       ("--timer=(\\d+)");
 	QRegExp regexp_max_requests("--max-requests=(\\d+)");
@@ -67,20 +67,32 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 			params.userAgent = regexp_user_agent.cap(1);
 			continue;
 		}
-		if(regexp_min_width.exactMatch(arg))
-		{
-			params.minSize.setWidth(regexp_min_width.cap(1).toInt());
-			continue;
-		}
-		if(regexp_min_height.exactMatch(arg))
-		{
-			params.minSize.setHeight(regexp_min_height.cap(1).toInt());
-			continue;
-		}
 		if(regexp_min_size.exactMatch(arg))
 		{
-			params.minSize.setWidth (regexp_min_size.cap(1).toInt());
-			params.minSize.setHeight(regexp_min_size.cap(2).toInt());
+			const int width  = regexp_min_size.cap(1).toInt();
+			const int height = regexp_min_size.cap(2).toInt();
+			if(width > 0)
+			{
+				params.minSize.setWidth (width);
+			}
+			if(height > 0)
+			{
+				params.minSize.setHeight(height);
+			}
+			continue;
+		}
+		if(regexp_scaled_size.exactMatch(arg))
+		{
+			const int width  = regexp_scaled_size.cap(1).toInt();
+			const int height = regexp_scaled_size.cap(2).toInt();
+			if(width > 0)
+			{
+				params.scaledSize.setWidth (width);
+			}
+			if(height > 0)
+			{
+				params.scaledSize.setHeight(height);
+			}
 			continue;
 		}
 		if(regexp_crop.exactMatch(arg))

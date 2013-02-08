@@ -34,17 +34,27 @@
 
 ### you can specify minimum viewport size (default is 1024x768)
 
-`wiget --min-width=1200 "http://example.com/" >output.ppm`  
-`wiget --min-height=800 "http://example.com/" >output.ppm`  
-`wiget --min-size=1200x800 "http://example.com/" >output.ppm`  
+`wiget --min-size=1200x900 "http://example.com/" >output.ppm`  
+`wiget --min-size=1200x "http://example.com/" >output.ppm`  
+`wiget --min-size=x900 "http://example.com/" >output.ppm`  
+
+### you can resize image as below
+
+`wiget --scaled-size=320x240 "http://example.com/" >output.ppm`  
+`wiget --scaled-size=320x "http://example.com/" >output.ppm`  
+`wiget --scaled-size=x240 "http://example.com/" >output.ppm`  
 
 ### you can crop image by minimum viewport size
 
 `wiget --crop "http://example.com/" >output.ppm`
 
-### you can resize and crop by ImageMagick as below
+### you can resize and crop as below
 
-`wiget "http://example.com/" | convert -resize 320 -crop 320x240+0+0 - thumb.png`
+`wiget --min-size=1200x900 --crop --scaled-size=320x240 "http://example.com/" >output.ppm`
+
+### for more complex conversion, use ImageMagick as below
+
+`wiget --min-size=1200x900 "http://example.com/" | convert -rotate +90 -resize 320x320! - output.ppm`
 
 ### you can use "silent mode" if you feel noisy about message
 
@@ -52,3 +62,4 @@
 
 ### iPad screenshot
 `wiget http://example.com/ --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-width=1024 --min-height=768 >output.ppm`
+
