@@ -42,12 +42,12 @@
 `wiget --min-size=x800 "http://example.com/" >output.ppm`  
 
 ### "--scaled-size" to resize image as below
-`wiget --scaled-size=320x240 "http://example.com/" >output.ppm`  
-`wiget --scaled-size=320x "http://example.com/" >output.ppm`  
-`wiget --scaled-size=x240 "http://example.com/" >output.ppm`  
+`wiget --scaled-size=400x400 "http://example.com/" >output.ppm`  
+`wiget --scaled-size=400x "http://example.com/" >output.ppm`  
+`wiget --scaled-size=x400 "http://example.com/" >output.ppm`  
 
 ### upper case "X" to resize by long-side
-`wiget --scaled-size=320X240 "http://example.com/" >output.ppm`  
+`wiget --scaled-size=400X400 "http://example.com/" >output.ppm`  
 
 ### "--crop" to crop image by minimum viewport size
 `wiget --crop "http://example.com/" >output.ppm`  
