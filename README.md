@@ -52,12 +52,12 @@
 
 ### "--user-agent" to specify user agent
 (example: iPad screenshot)  
-`wiget http://example.com/ --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-width=1024 --min-height=768 >output.ppm`  
+`wiget --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-width=1024 --min-height=768 "http://example.com/" >output.ppm`  
 
 ## advanced usage
 
 ### creating thumbnail
-`wiget --min-size=1200x900 --crop --scaled-size=320x240 --output=output.png http://example.com/`  
+`wiget --min-size=1200x900 --crop --scaled-size=320x240 --output=output.png "http://example.com/"`  
 
 ## with external tools...
 
