@@ -100,7 +100,8 @@ bool Snapshot::_doShot()
 		}
 		else
 		{
-			pix = pix.scaled(scaledSize , Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			const Qt::AspectRatioMode aspectRatioMode = m_params.scaleMax ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
+			pix = pix.scaled(scaledSize , aspectRatioMode, Qt::SmoothTransformation);
 		}
 	}
 

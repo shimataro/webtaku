@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	SNAPSHOTPARAMS params = {"", "PPM", "", QSize(1024, 768), QSize(0, 0), false, 3, 1024, -1};
+	SNAPSHOTPARAMS params = {"", "PPM", "", QSize(1024, 768), QSize(0, 0), false, false, 3, 1024, -1};
 	parseParams(app.arguments(), url, params);
 
 	Snapshot shot;
@@ -42,8 +42,8 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 	QRegExp regexp_format      ("--format=(\\w+)");
 	QRegExp regexp_output      ("--output=(.*)");
 	QRegExp regexp_user_agent  ("--user-agent=(.*)");
-	QRegExp regexp_min_size    ("--min-size=(\\d+)?x(\\d+)?");
-	QRegExp regexp_scaled_size ("--scaled-size=(\\d+)?x(\\d+)?");
+	QRegExp regexp_min_size    ("--min-size=(\\d+)?([xX])(\\d+)?");
+	QRegExp regexp_scaled_size ("--scaled-size=(\\d+)?([xX])(\\d+)?");
 	QRegExp regexp_crop        ("--crop");
 	QRegExp regexp_timer       ("--timer=(\\d+)");
 	QRegExp regexp_max_requests("--max-requests=(\\d+)");
@@ -70,7 +70,7 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 		if(regexp_min_size.exactMatch(arg))
 		{
 			const int width  = regexp_min_size.cap(1).toInt();
-			const int height = regexp_min_size.cap(2).toInt();
+			const int height = regexp_min_size.cap(3).toInt();
 			if(width > 0)
 			{
 				params.minSize.setWidth (width);
@@ -84,7 +84,7 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 		if(regexp_scaled_size.exactMatch(arg))
 		{
 			const int width  = regexp_scaled_size.cap(1).toInt();
-			const int height = regexp_scaled_size.cap(2).toInt();
+			const int height = regexp_scaled_size.cap(3).toInt();
 			if(width > 0)
 			{
 				params.scaledSize.setWidth (width);
@@ -93,6 +93,7 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 			{
 				params.scaledSize.setHeight(height);
 			}
+			params.scaleMax = (regexp_scaled_size.cap(2) == "X");
 			continue;
 		}
 		if(regexp_crop.exactMatch(arg))
