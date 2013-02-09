@@ -11,8 +11,8 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent)
 {
 	m_requestCount = 0;
 
-	m_qWebPage  = NULL;
-	m_qWebView  = NULL;
+	m_qWebPage = NULL;
+	m_qWebView = NULL;
 	m_qTimer = NULL;
 }
 
@@ -27,7 +27,6 @@ void Snapshot::shot(const QUrl &url, const SNAPSHOTPARAMS &params)
 {
 	m_params = params;
 
-	qDebug() << "Loading fake UI...";
 	m_qWebPage = _getWebPage();
 	m_qWebView = _getWebView();
 	m_qTimer   = _getTimer();
