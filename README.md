@@ -8,7 +8,7 @@
     # fonts
     sudo apt-get -y install ttf-mscorefonts-installer ttf-umefont
 
-    # If following message is displayed (especially Ubuntu 11.10 or later):
+    # if following message is displayed (especially Ubuntu 11.10 or later):
     # (wiget:XXXXX): Gtk-WARNING **: Unable to locate theme engine in module_path: "pixmap"
     sudo apt-get -y install gtk2-engines-pixbuf
 
@@ -84,7 +84,7 @@
 
 ## advanced usage
 
-### creating thumbnail
+### to create 320x240 thumbnail from 1200x900 viewport
 
     wiget --min-size=1200x900 --crop --scaled-size=320x240 --output=output.png "http://example.com/"
 
