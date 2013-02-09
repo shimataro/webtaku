@@ -31,6 +31,9 @@
 ### dump image data into stdout, and default file format is PPM
 `wiget "http://example.com/" >output.ppm`  
 
+### if scheme is omitted, "http://" will be complemented
+`wiget "example.com" >output.ppm`  
+
 ### "--format" to specify file format
 (BMP|JPG|PNG|PPM|XBM|XPM)  
 `wiget --format=JPG "http://example.com/" >output.jpg`  

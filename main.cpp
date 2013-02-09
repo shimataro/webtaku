@@ -48,6 +48,7 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 	QRegExp regexp_timer       ("--timer=(\\d+)");
 	QRegExp regexp_max_requests("--max-requests=(\\d+)");
 	QRegExp regexp_silent      ("--silent");
+	QRegExp regexp_url         ("\\w+://");
 
 	for(QStringList::const_iterator p = arguments.begin(); p != arguments.end(); p++)
 	{
@@ -115,6 +116,11 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 		{
 			qInstallMsgHandler(silentMsgHandler);
 			continue;
+		}
+
+		if(regexp_url.indexIn(arg) != 0)
+		{
+			arg = "http://" + arg;
 		}
 		url = QUrl(arg);
 	}
