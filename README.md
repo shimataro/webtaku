@@ -11,6 +11,9 @@
 ### to disappear message - (wiget:26117): Gtk-WARNING **: Unable to locate theme engine in module_path: "pixmap"
 `sudo apt-get -y install gtk2-engines-pixbuf`
 
+### virtual X frame buffer (when X server is not running)
+`sudo apt-get -y install xvfb`  
+
 ## build & install
 `git clone https://github.com/shimataro/wiget.git`  
 `cd wiget`  
@@ -35,6 +38,10 @@
 ### "--output" to specify output file
 (file format will be determined by extension, and "--format" option will be ignored)  
 `wiget --output=output.png "http://example.com/"`  
+
+### when X server is not running, use virtual frame buffer
+(use "--output" option because xvfb-run redirects stderr to stdout)  
+`xvfb-run --server-args="-screen 0, 1024x768x24" wiget --output=output.png "http://example.com/"`  
 
 ### "--min-size" to specify minimum viewport size (default is 1024x768)
 `wiget --min-size=1200x800 "http://example.com/" >output.ppm`  
@@ -63,13 +70,6 @@
 
 ### creating thumbnail
 `wiget --min-size=1200x900 --crop --scaled-size=320x240 --output=output.png "http://example.com/"`  
-
-## with external tools...
-
-### when X server is not running, use virtual frame buffer
-(use "--output" option because xvfb-run redirects stderr to stdout)  
-`sudo apt-get -y install xvfb`  
-`xvfb-run --server-args="-screen 0, 1024x768x24" wiget --output=output.png "http://example.com/"`  
 
 ### for more complex conversion, use ImageMagick as below
 `wiget --min-size=1200x900 "http://example.com/" | convert -rotate +90 -resize 320x320! - output.ppm`  
