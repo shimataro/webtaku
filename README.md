@@ -39,25 +39,25 @@
 
     wiget "example.com" >output.ppm
 
-### "--format" to specify file format (BMP|JPG|PNG|PPM|XBM|XPM)  
+### "--format" to specify file format (BMP|JPG|PNG|PPM|XBM|XPM)
 
     wiget --format=JPG "http://example.com/" >output.jpg
 
 ### "--output" to specify output file
-(file format will be determined by extension, and "--format" option will be ignored)  
+(file format will be determined by extension, and "--format" option will be ignored)
 
     wiget --output=output.png "http://example.com/"
 
 ### when X server is not running, use virtual frame buffer
-(use "--output" option because xvfb-run redirects stderr to stdout)  
+(use "--output" option because xvfb-run redirects stderr to stdout)
 
     xvfb-run --server-args="-screen 0, 1024x768x24" wiget --output=output.png "http://example.com/"
 
 ### "--min-size" to specify minimum viewport size (default is 1024x768)
 
-    wiget --min-size=1200x800 "http://example.com/" >output.ppm
+    wiget --min-size=1200x900 "http://example.com/" >output.ppm
     wiget --min-size=1200x "http://example.com/" >output.ppm
-    wiget --min-size=x800 "http://example.com/" >output.ppm
+    wiget --min-size=x900 "http://example.com/" >output.ppm
 
 ### "--scaled-size" to resize image as below
 
@@ -78,9 +78,12 @@
     wiget --silent "http://example.com/" >output.ppm
 
 ### "--user-agent" to specify user agent
-(example: iPad screenshot)  
 
-    wiget --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-width=1024 --min-height=768 "http://example.com/" >output.ppm
+    # iPhone5 (iOS6)
+    wiget --user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-size=1136x640 "http://example.com/" >output.ppm
+
+    # iPad (iOS6)
+    wiget --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-size=1024x768 "http://example.com/" >output.ppm
 
 ## advanced usage
 
