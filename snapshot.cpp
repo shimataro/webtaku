@@ -66,48 +66,47 @@ QTimer *Snapshot::_getTimer()
 	return qTimer;
 }
 
-
-bool Snapshot::_doShot()
+QSize Snapshot::_getImageSize()
 {
-	QSize size = m_params.minSize;
-	if(!m_params.crop)
+	const QSize &size = m_params.minSize;
+	if(m_params.crop)
 	{
-		// resize view
-		const QSize contentsSize  = m_qWebPage->mainFrame()->contentsSize();
-		if(size.width() < contentsSize.width() || size.height() < contentsSize.height())
-		{
-			size = contentsSize;
-			m_qWebView->setMinimumSize(size);
-			m_qWebView->repaint();
-		}
+		return size;
 	}
 
-	// get image data
-	QPixmap pix = QPixmap::grabWidget(m_qWebView, 0, 0, size.width(), size.height());
-
-	// scale
-	const QSize &scaledSize = m_params.scaledSize;
-	if(!scaledSize.isNull())
+	// resize view
+	const QSize contentsSize  = m_qWebPage->mainFrame()->contentsSize();
+	if(size.width() < contentsSize.width() || size.height() < contentsSize.height())
 	{
-		if(scaledSize.width() == 0)
-		{
-			pix = pix.scaledToHeight(scaledSize.height(), Qt::SmoothTransformation);
-		}
-		else if(scaledSize.height() == 0)
-		{
-			pix = pix.scaledToWidth (scaledSize.width() , Qt::SmoothTransformation);
-		}
-		else
-		{
-			const Qt::AspectRatioMode aspectRatioMode = m_params.scaleMax ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
-			pix = pix.scaled(scaledSize , aspectRatioMode, Qt::SmoothTransformation);
-		}
+		m_qWebView->setMinimumSize(contentsSize);
+		m_qWebView->repaint();
 	}
-
-	return _outputPixmap(pix);
+	return contentsSize;
 }
 
-bool Snapshot::_outputPixmap(const QPixmap &pixmap) const
+QPixmap Snapshot::_scaleImage(const QPixmap &pixmap) const
+{
+	const QSize &scaledSize = m_params.scaledSize;
+	if(scaledSize.isNull())
+	{
+		// do not scale
+		return pixmap;
+	}
+
+	if(scaledSize.width() == 0)
+	{
+		return pixmap.scaledToHeight(scaledSize.height(), Qt::SmoothTransformation);
+	}
+	if(scaledSize.height() == 0)
+	{
+		return pixmap.scaledToWidth (scaledSize.width() , Qt::SmoothTransformation);
+	}
+
+	const Qt::AspectRatioMode aspectRatioMode = m_params.scaleMax ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
+	return pixmap.scaled(scaledSize, aspectRatioMode, Qt::SmoothTransformation);
+}
+
+bool Snapshot::_outputImage(const QPixmap &pixmap) const
 {
 	if(!m_params.outputFilename.isEmpty())
 	{
@@ -138,7 +137,15 @@ void Snapshot::doneLoading(bool)
 
 void Snapshot::doneWaiting()
 {
-	if(!_doShot())
+	// get image data
+	const QSize imageSize = _getImageSize();
+	QPixmap pixmap = QPixmap::grabWidget(m_qWebView, 0, 0, imageSize.width(), imageSize.height());
+
+	// scale
+	pixmap = Snapshot::_scaleImage(pixmap);
+
+	// output
+	if(!_outputImage(pixmap))
 	{
 		qCritical() << "Fatal error: failed to save image";
 		QApplication::exit(SSS_FAILEDTOSAVE);

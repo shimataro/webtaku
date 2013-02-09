@@ -52,8 +52,9 @@ private:
 	QWebView *_getWebView() const;
 	QTimer   *_getTimer();
 
-	bool _doShot();
-	bool _outputPixmap(const QPixmap &pixmap) const;
+	QSize   _getImageSize();
+	QPixmap _scaleImage (const QPixmap &pixmap) const;
+	bool    _outputImage(const QPixmap &pixmap) const;
 	static bool _needsRedirect(int statusCode);
 
 private slots:
