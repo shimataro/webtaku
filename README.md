@@ -19,7 +19,7 @@
 
     git clone https://github.com/shimataro/wiget.git
     cd wiget
-    qmake
+    qmake CONFIG+=release
     make
     sudo make install
 
