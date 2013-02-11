@@ -27,8 +27,9 @@ QMAKE_CXXFLAGS += -ansi
 #QMAKE_CXXFLAGS += -std=c++0x
 
 CONFIG(debug, debug|release) {
-	QMAKE_CFLAGS   += -O0
-	QMAKE_CXXFLAGS += -O0
+	QMAKE_CFLAGS   += -O0 -pg
+	QMAKE_CXXFLAGS += -O0 -pg
+	QMAKE_LFLAGS   += -O0 -pg
 }
 CONFIG(release, debug|release) {
 	QMAKE_CFLAGS   += -Ofast

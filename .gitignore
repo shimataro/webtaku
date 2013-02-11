@@ -13,6 +13,7 @@ Makefile
 moc_*
 *.o
 wiget
+gmon.out
 
 # temporary & backup files
 *.bak
