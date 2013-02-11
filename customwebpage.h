@@ -12,6 +12,7 @@
 #include <QtCore>
 #include <QtWebKit>
 #include <QWebPage>
+#include "common.h"
 
 class CustomWebPage : public QWebPage
 {

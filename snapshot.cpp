@@ -23,7 +23,7 @@ Snapshot::~Snapshot()
 	delete m_qTimer; m_qTimer = NULL;
 }
 
-void Snapshot::shot(const QUrl &url, const SNAPSHOTPARAMS &params)
+void Snapshot::shot(const QUrl &url, const PARAMS &params)
 {
 	m_params = params;
 
@@ -148,7 +148,7 @@ void Snapshot::doneWaiting()
 	if(!_outputImage(pixmap))
 	{
 		qCritical() << "Fatal error: failed to save image";
-		QApplication::exit(SSS_FAILEDTOSAVE);
+		QApplication::exit(EC_FAILEDTOSAVE);
 		return;
 	}
 
@@ -165,7 +165,7 @@ void Snapshot::gotReply(QNetworkReply *reply)
 	if(m_requestCount++ > m_params.maxRequests)
 	{
 		qCritical() << "Fatal error: too many requests";
-		QApplication::exit(SSS_TOOMANYREQUESTS);
+		QApplication::exit(EC_TOOMANYREQUESTS);
 		return;
 	}
 }

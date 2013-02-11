@@ -9,26 +9,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QTimer>
-
-enum SNAPSHOTSTATUS
-{
-	SSS_TOOMANYREQUESTS = 1,
-	SSS_FAILEDTOSAVE    = 2,
-};
-
-struct SNAPSHOTPARAMS
-{
-	QString outputFilename;
-	QString outputFormat;
-	QString userAgent;
-	QSize   minSize;
-	QSize   scaledSize;
-	bool    scaleMax;
-	bool    crop;
-	int     timer_ms;
-	size_t  maxRequests;
-	int     quality;
-};
+#include "common.h"
 
 class Snapshot : QObject
 {
@@ -40,12 +21,12 @@ class Snapshot : QObject
 
 	size_t m_requestCount;
 
-	SNAPSHOTPARAMS m_params;
+	PARAMS m_params;
 
 public:
 	Snapshot(QObject *parent = NULL);
 	~Snapshot();
-	void shot(const QUrl &url, const SNAPSHOTPARAMS &params);
+	void shot(const QUrl &url, const PARAMS &params);
 
 private:
 	QWebPage *_getWebPage() const;

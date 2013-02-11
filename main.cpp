@@ -5,9 +5,10 @@
 #include <qglobal.h>
 #include <QApplication>
 #include <iostream>
+#include "common.h"
 #include "snapshot.h"
 
-static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS &params);
+static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params);
 static void silentMsgHandler(QtMsgType type, const char *msg);
 
 int main(int argc, char *argv[])
@@ -22,8 +23,11 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	SNAPSHOTPARAMS params = {"", "PPM", "", QSize(1024, 768), QSize(0, 0), false, false, 3, 1024, -1};
-	parseParams(app.arguments(), url, params);
+	PARAMS params = {"", "PPM", "", QSize(1024, 768), QSize(0, 0), false, false, 3, 1024, -1};
+	if(!parseParams(app.arguments(), url, params))
+	{
+		return EC_INVALIDARGUMENT;
+	}
 
 	Snapshot shot;
 	shot.shot(url, params);
@@ -37,8 +41,10 @@ int main(int argc, char *argv[])
  * @param url       [out]target URL
  * @param params    [out]parsed parameters
  */
-static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS &params)
+static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 {
+	bool result = true;
+
 	QRegExp regexp_format      ("--format=(\\w+)");
 	QRegExp regexp_output      ("--output=(.*)");
 	QRegExp regexp_user_agent  ("--user-agent=(.*)");
@@ -118,12 +124,20 @@ static void parseParams(const QStringList &arguments, QUrl &url, SNAPSHOTPARAMS 
 			continue;
 		}
 
+		if(arg[0] == QChar('-'))
+		{
+			std::cerr << "unknown option: " << qPrintable(arg) << std::endl;
+			result = false;
+			continue;
+		}
+
 		if(regexp_url.indexIn(arg) != 0)
 		{
 			arg = "http://" + arg;
 		}
 		url = QUrl(arg);
 	}
+	return result;
 }
 
 /**
