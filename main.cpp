@@ -54,7 +54,7 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	QRegExp regexp_timer       ("--timer=(\\d+)");
 	QRegExp regexp_max_requests("--max-requests=(\\d+)");
 	QRegExp regexp_silent      ("--silent");
-	QRegExp regexp_url         ("\\w+://");
+	QRegExp regexp_url         ("^\\w+://");
 
 	for(QStringList::const_iterator p = arguments.begin(); p != arguments.end(); p++)
 	{
