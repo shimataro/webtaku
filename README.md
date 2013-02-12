@@ -61,13 +61,17 @@
 
 ### "--scaled-size" to resize image as below
 
-    wiget --scaled-size=400x400 "http://example.com/" >output.ppm
-    wiget --scaled-size=400x "http://example.com/" >output.ppm
-    wiget --scaled-size=x400 "http://example.com/" >output.ppm
+    # this will create 300x225 image
+    wiget --scaled-size=300x300 "http://example.com/" >output.ppm
 
-### upper case "X" to resize by long-side
+    # use upper case "X" to resize by long-side (this will create 400x300 image)
+    wiget --scaled-size=300X300 "http://example.com/" >output.ppm
 
-    wiget --scaled-size=400X400 "http://example.com/" >output.ppm
+    # omit height to resize by width (300x225)
+    wiget --scaled-size=300x "http://example.com/" >output.ppm
+
+    # omit width to resize by height (400x300)
+    wiget --scaled-size=x300 "http://example.com/" >output.ppm
 
 ### "--crop" to crop image by minimum viewport size
 

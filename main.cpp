@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-size=<minimum-width>x<minimum-height>] [--scaled-size=<scaled-width>x<scaled-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests] [--silent] <url>" << std::endl;
+		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--min-size=<minimum-width>x<minimum-height>] [--scaled-size=<scaled-width>x<scaled-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests>] [--silent] <url>" << std::endl;
 		return -1;
 	}
 
