@@ -2,7 +2,7 @@
 
 QT += core webkit network
 
-PROJECT  = wiget
+PROJECT  = webtaku
 LANGUAGE = C++
 TEMPLATE = app
 #TARGET   = <target_file>

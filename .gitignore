@@ -6,13 +6,13 @@
 /.settings/
 
 /.kdev*/
-/wiget.kdev*
+/webtaku.kdev*
 
 # auto generated files
 Makefile
 moc_*
 *.o
-wiget
+webtaku
 gmon.out
 
 # temporary & backup files
