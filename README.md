@@ -16,6 +16,7 @@
     sudo apt-get -y install xvfb
 
 ## build & install
+(will be installed in /usr/local/bin and /usr/local/src)
 
     git clone https://github.com/shimataro/webtaku.git
     cd webtaku
@@ -23,15 +24,13 @@
     make
     sudo make install
 
-(will be installed in /usr/local/bin and /usr/local/src)
-
 ---
 
 # Usage
 
 ## basic usage
 
-### dump image data into stdout, and default file format is PPM
+### dump image data into stdout (default file format is PPM)
 
     webtaku "http://example.com/" >output.ppm
 
@@ -44,13 +43,13 @@
     webtaku --format=JPG "http://example.com/" >output.jpg
 
 ### "--output" to specify output file
-(file format will be determined by extension, and "--format" option will be ignored)
 
+    # file format will be determined by extension ("--format" option will be ignored)
     webtaku --output=output.png "http://example.com/"
 
 ### when X server is not running, use virtual frame buffer
-(use "--output" option because xvfb-run redirects stderr to stdout)
 
+    # use "--output" option because xvfb-run redirects stderr to stdout
     xvfb-run --server-args="-screen 0, 1024x768x24" webtaku --output=output.png "http://example.com/"
 
 ### "--min-size" to specify minimum viewport size (default is 1024x768)
