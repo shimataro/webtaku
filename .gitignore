@@ -8,6 +8,8 @@
 /.kdev*/
 /webtaku.kdev*
 
+webtaku.pro.user
+
 # auto generated files
 Makefile
 moc_*
