@@ -39,10 +39,10 @@ private:
 	static bool _needsRedirect(int statusCode);
 
 private slots:
-	void doneLoading(bool);
-	void doneWaiting();
-	void gotReply(QNetworkReply *reply);
-	void sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+	void slotDoneLoading(bool);
+	void slotDoneWaiting();
+	void slotGotReply(QNetworkReply *reply);
+	void slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 };
 
 #endif // SNAPSHOT_H

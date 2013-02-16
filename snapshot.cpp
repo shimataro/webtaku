@@ -31,10 +31,11 @@ void Snapshot::shot(const QUrl &url, const PARAMS &params)
 	m_qWebView = _getWebView();
 	m_qTimer   = _getTimer();
 
-	connect(m_qTimer, SIGNAL(timeout()), SLOT(doneWaiting()));
-	connect(m_qWebPage->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)));
-	connect(m_qWebPage, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
-	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+	// setup signal/slot
+	connect(m_qTimer                          , SIGNAL(timeout())                                 , SLOT(slotDoneWaiting()));
+	connect(m_qWebPage                        , SIGNAL(loadFinished(bool))                        , SLOT(slotDoneLoading(bool)));
+	connect(m_qWebPage->networkAccessManager(), SIGNAL(finished(QNetworkReply*))                  , SLOT(slotGotReply(QNetworkReply*)));
+	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slotSslErrors(QNetworkReply*,QList<QSslError>)));
 
 	QNetworkRequest request(url);
 	request.setRawHeader("Cookie", params.cookie);
@@ -130,15 +131,15 @@ bool Snapshot::_needsRedirect(int statusCode)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// event handler
+// slot methods
 
-void Snapshot::doneLoading(bool)
+void Snapshot::slotDoneLoading(bool)
 {
 	// A reasonable waiting time for any script to execute
 	m_qTimer->start(m_params.timer_ms);
 }
 
-void Snapshot::doneWaiting()
+void Snapshot::slotDoneWaiting()
 {
 	// get image data
 	const QSize imageSize = _getImageSize();
@@ -159,7 +160,7 @@ void Snapshot::doneWaiting()
 	QApplication::quit();
 }
 
-void Snapshot::gotReply(QNetworkReply *reply)
+void Snapshot::slotGotReply(QNetworkReply *reply)
 {
 	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
 	const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
@@ -173,7 +174,7 @@ void Snapshot::gotReply(QNetworkReply *reply)
 	}
 }
 
-void Snapshot::sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
+void Snapshot::slotSslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
 {
 	reply->ignoreSslErrors();
 }
