@@ -15,16 +15,17 @@ enum EXITCODE
 
 struct PARAMS
 {
-	QString outputFilename;
-	QString outputFormat;
-	QString userAgent;
-	QSize   minSize;
-	QSize   scaledSize;
-	bool    scaleMax;
-	bool    crop;
-	int     timer_ms;
-	size_t  maxRequests;
-	int     quality;
+	QString    outputFilename;
+	QString    outputFormat;
+	QString    userAgent;
+	QByteArray cookie;
+	QSize      minSize;
+	QSize      scaledSize;
+	bool       scaleMax;
+	bool       crop;
+	int        timer_ms;
+	size_t     maxRequests;
+	int        quality;
 };
 
 #endif // COMMON_H

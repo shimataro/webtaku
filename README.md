@@ -52,6 +52,13 @@
     # use "--output" option because xvfb-run redirects stderr to stdout
     xvfb-run --server-args="-screen 0, 1024x768x24" webtaku --output=output.png "http://example.com/"
 
+### "--cookie" to set cookie
+
+    webtaku --cookie="name1=value1;name2=value2" "http://example.com/" >output.ppm
+
+    # you can use multiple "--cookie" options to set multiple cookies
+    webtaku --cookie="name1=value1" --cookie="name2=value2" "http://example.com/" >output.ppm
+
 ### "--min-size" to specify minimum viewport size (default is 1024x768)
 
     webtaku --min-size=1200x900 "http://example.com/" >output.ppm

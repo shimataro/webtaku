@@ -36,8 +36,11 @@ void Snapshot::shot(const QUrl &url, const PARAMS &params)
 	connect(m_qWebPage, SIGNAL(loadFinished(bool)), SLOT(doneLoading(bool)));
 	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
 
+	QNetworkRequest request(url);
+	request.setRawHeader("Cookie", params.cookie);
+
 	// setup page
-	m_qWebPage->mainFrame()->load(url);
+	m_qWebPage->mainFrame()->load(request);
 	m_qWebPage->setViewportSize(params.minSize);
 	m_qWebPage->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 }
