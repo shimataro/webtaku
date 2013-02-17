@@ -10,12 +10,13 @@
 
 Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 {
+	// create objects
 	CustomWebPage *qWebPage = new CustomWebPage;
 	CustomWebView *qWebView = new CustomWebView;
 	QTimer        *qTimer   = new QTimer(this);
 
-	QWebFrame *qWebFrame = qWebPage->mainFrame();
-	qWebFrame->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	// setup objects
+	qWebPage->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 	qWebView->setPage(qWebPage);
 
 	QNetworkAccessManager *qNetworkAccessManager = qWebPage->networkAccessManager();
