@@ -57,7 +57,8 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	QRegExp regexp_silent      ("--silent");
 	QRegExp regexp_url         ("^\\w+://");
 
-	for(QStringList::const_iterator p = arguments.begin(); p != arguments.end(); p++)
+	QStringList::const_iterator p = arguments.begin();
+	while(++p != arguments.end())
 	{
 		QString arg = *p;
 		if(regexp_format.exactMatch(arg))
