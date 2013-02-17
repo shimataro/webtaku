@@ -1,9 +1,9 @@
 /**
- * Snapshot object
+ * Gyotaku object
  * @author shimataro
  */
-#ifndef SNAPSHOT_H
-#define SNAPSHOT_H
+#ifndef GYOTAKU_H
+#define GYOTAKU_H
 #include <QtCore>
 #include <QtWebKit>
 #include <QImage>
@@ -11,7 +11,7 @@
 #include <QTimer>
 #include "common.h"
 
-class Snapshot : QObject
+class Gyotaku : QObject
 {
 	Q_OBJECT
 
@@ -24,9 +24,9 @@ class Snapshot : QObject
 	PARAMS m_params;
 
 public:
-	Snapshot(QObject *parent = NULL);
-	~Snapshot();
-	void shot(const QUrl &url, const PARAMS &params);
+	Gyotaku(QObject *parent = NULL);
+	~Gyotaku();
+	void rub(const QUrl &url, const PARAMS &params);
 
 private:
 	QWebPage *_createWebPage() const;
@@ -45,4 +45,4 @@ private slots:
 	void slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 };
 
-#endif // SNAPSHOT_H
+#endif // GYOTAKU_H

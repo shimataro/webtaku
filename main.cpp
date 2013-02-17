@@ -6,7 +6,7 @@
 #include <QApplication>
 #include <iostream>
 #include "common.h"
-#include "snapshot.h"
+#include "gyotaku.h"
 
 static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params);
 static void silentMsgHandler(QtMsgType type, const char *msg);
@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 		return EC_INVALIDARGUMENT;
 	}
 
-	Snapshot shot;
-	shot.shot(url, params);
+	Gyotaku gyotaku;
+	gyotaku.rub(url, params);
 
 	return app.exec();
 }

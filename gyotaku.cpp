@@ -1,13 +1,13 @@
 /**
- * Snapshot object
+ * Gyotaku object
  * @author shimataro
  */
 #include <QApplication>
-#include "snapshot.h"
+#include "gyotaku.h"
 #include "customwebpage.h"
 
 
-Snapshot::Snapshot(QObject *parent) : QObject(parent)
+Gyotaku::Gyotaku(QObject *parent) : QObject(parent)
 {
 	m_requestCount = 0;
 
@@ -16,14 +16,14 @@ Snapshot::Snapshot(QObject *parent) : QObject(parent)
 	m_qTimer = NULL;
 }
 
-Snapshot::~Snapshot()
+Gyotaku::~Gyotaku()
 {
 	delete m_qWebPage; m_qWebPage = NULL;
 	delete m_qWebView; m_qWebView = NULL;
 	delete m_qTimer; m_qTimer = NULL;
 }
 
-void Snapshot::shot(const QUrl &url, const PARAMS &params)
+void Gyotaku::rub(const QUrl &url, const PARAMS &params)
 {
 	m_params = params;
 
@@ -50,13 +50,13 @@ void Snapshot::shot(const QUrl &url, const PARAMS &params)
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
 
-QWebPage *Snapshot::_createWebPage() const
+QWebPage *Gyotaku::_createWebPage() const
 {
 	QWebPage *qWebPage = new CustomWebPage(m_params.userAgent);
 	return qWebPage;
 }
 
-QWebView *Snapshot::_createWebView() const
+QWebView *Gyotaku::_createWebView() const
 {
 	QWebView *qWebView = new QWebView;
 	qWebView->setPage(m_qWebPage);
@@ -64,13 +64,13 @@ QWebView *Snapshot::_createWebView() const
 	return qWebView;
 }
 
-QTimer *Snapshot::_createTimer()
+QTimer *Gyotaku::_createTimer()
 {
 	QTimer *qTimer = new QTimer(this);
 	return qTimer;
 }
 
-QSize Snapshot::_getImageSize()
+QSize Gyotaku::_getImageSize()
 {
 	const QSize &size = m_params.minSize;
 	if(m_params.crop)
@@ -88,7 +88,7 @@ QSize Snapshot::_getImageSize()
 	return contentsSize;
 }
 
-QPixmap Snapshot::_scaleImage(const QPixmap &pixmap) const
+QPixmap Gyotaku::_scaleImage(const QPixmap &pixmap) const
 {
 	const QSize &scaledSize = m_params.scaledSize;
 	if(scaledSize.isNull())
@@ -110,7 +110,7 @@ QPixmap Snapshot::_scaleImage(const QPixmap &pixmap) const
 	return pixmap.scaled(scaledSize, aspectRatioMode, Qt::SmoothTransformation);
 }
 
-bool Snapshot::_outputImage(const QPixmap &pixmap) const
+bool Gyotaku::_outputImage(const QPixmap &pixmap) const
 {
 	if(!m_params.outputFilename.isEmpty())
 	{
@@ -124,7 +124,7 @@ bool Snapshot::_outputImage(const QPixmap &pixmap) const
 	}
 }
 
-bool Snapshot::_needsRedirect(int statusCode)
+bool Gyotaku::_needsRedirect(int statusCode)
 {
 	return (statusCode == 301 || statusCode == 302 || statusCode == 303 || statusCode == 307);
 }
@@ -133,14 +133,14 @@ bool Snapshot::_needsRedirect(int statusCode)
 ////////////////////////////////////////////////////////////////////////////////
 // slot methods
 
-void Snapshot::slot_Timer_timeout()
+void Gyotaku::slot_Timer_timeout()
 {
 	// get image data
 	const QSize imageSize = _getImageSize();
 	QPixmap pixmap = QPixmap::grabWidget(m_qWebView, 0, 0, imageSize.width(), imageSize.height());
 
 	// scale
-	pixmap = Snapshot::_scaleImage(pixmap);
+	pixmap = Gyotaku::_scaleImage(pixmap);
 
 	// output
 	if(!_outputImage(pixmap))
@@ -154,13 +154,13 @@ void Snapshot::slot_Timer_timeout()
 	QApplication::quit();
 }
 
-void Snapshot::slot_WebPage_loadFinished(bool)
+void Gyotaku::slot_WebPage_loadFinished(bool)
 {
 	// A reasonable waiting time for any script to execute
 	m_qTimer->start(m_params.timer_ms);
 }
 
-void Snapshot::slot_NetworkAccessManager_finished(QNetworkReply *reply)
+void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 {
 	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
 	const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
@@ -174,7 +174,7 @@ void Snapshot::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 	}
 }
 
-void Snapshot::slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
+void Gyotaku::slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
 {
 	reply->ignoreSslErrors();
 }

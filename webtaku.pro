@@ -10,12 +10,12 @@ TEMPLATE = app
 
 SOURCES += \
 	main.cpp \
-	snapshot.cpp \
-	customwebpage.cpp
+	customwebpage.cpp \
+	gyotaku.cpp
 
 HEADERS += \
-	snapshot.h \
-	customwebpage.h
+	customwebpage.h \
+	gyotaku.h
 
 
 # configuration
