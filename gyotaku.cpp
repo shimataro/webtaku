@@ -54,6 +54,7 @@ void Gyotaku::setParams(const PARAMS &params)
 
 void Gyotaku::rub(const QUrl &url)
 {
+	m_requestCount = 0;
 	m_request.setUrl(url);
 	m_qWebPage->mainFrame()->load(m_request);
 }
