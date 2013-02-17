@@ -29,9 +29,9 @@ public:
 	void shot(const QUrl &url, const PARAMS &params);
 
 private:
-	QWebPage *_getWebPage() const;
-	QWebView *_getWebView() const;
-	QTimer   *_getTimer();
+	QWebPage *_createWebPage() const;
+	QWebView *_createWebView() const;
+	QTimer   *_createTimer();
 
 	QSize   _getImageSize();
 	QPixmap _scaleImage (const QPixmap &pixmap) const;
@@ -39,10 +39,10 @@ private:
 	static bool _needsRedirect(int statusCode);
 
 private slots:
-	void slotDoneLoading(bool);
-	void slotDoneWaiting();
-	void slotGotReply(QNetworkReply *reply);
-	void slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+	void slot_WebPage_loadFinished(bool);
+	void slot_Timer_timeout();
+	void slot_NetworkAccessManager_finished(QNetworkReply *reply);
+	void slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 };
 
 #endif // SNAPSHOT_H

@@ -27,36 +27,36 @@ void Snapshot::shot(const QUrl &url, const PARAMS &params)
 {
 	m_params = params;
 
-	m_qWebPage = _getWebPage();
-	m_qWebView = _getWebView();
-	m_qTimer   = _getTimer();
+	m_qWebPage = _createWebPage();
+	m_qWebView = _createWebView();
+	m_qTimer   = _createTimer();
 
 	// setup signal/slot
-	connect(m_qTimer                          , SIGNAL(timeout())                                 , SLOT(slotDoneWaiting()));
-	connect(m_qWebPage                        , SIGNAL(loadFinished(bool))                        , SLOT(slotDoneLoading(bool)));
-	connect(m_qWebPage->networkAccessManager(), SIGNAL(finished(QNetworkReply*))                  , SLOT(slotGotReply(QNetworkReply*)));
-	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slotSslErrors(QNetworkReply*,QList<QSslError>)));
+	connect(m_qTimer                          , SIGNAL(timeout())                                 , SLOT(slot_Timer_timeout()));
+	connect(m_qWebPage                        , SIGNAL(loadFinished(bool))                        , SLOT(slot_WebPage_loadFinished(bool)));
+	connect(m_qWebPage->networkAccessManager(), SIGNAL(finished(QNetworkReply*))                  , SLOT(slot_NetworkAccessManager_finished(QNetworkReply*)));
+	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slot_NetworkAccessManager_sslErrors(QNetworkReply*,QList<QSslError>)));
 
 	QNetworkRequest request(url);
 	request.setRawHeader("Cookie", params.cookie);
 
 	// setup page
-	m_qWebPage->mainFrame()->load(request);
 	m_qWebPage->setViewportSize(params.minSize);
 	m_qWebPage->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	m_qWebPage->mainFrame()->load(request);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
 
-QWebPage *Snapshot::_getWebPage() const
+QWebPage *Snapshot::_createWebPage() const
 {
 	QWebPage *qWebPage = new CustomWebPage(m_params.userAgent);
 	return qWebPage;
 }
 
-QWebView *Snapshot::_getWebView() const
+QWebView *Snapshot::_createWebView() const
 {
 	QWebView *qWebView = new QWebView;
 	qWebView->setPage(m_qWebPage);
@@ -64,7 +64,7 @@ QWebView *Snapshot::_getWebView() const
 	return qWebView;
 }
 
-QTimer *Snapshot::_getTimer()
+QTimer *Snapshot::_createTimer()
 {
 	QTimer *qTimer = new QTimer(this);
 	return qTimer;
@@ -133,13 +133,7 @@ bool Snapshot::_needsRedirect(int statusCode)
 ////////////////////////////////////////////////////////////////////////////////
 // slot methods
 
-void Snapshot::slotDoneLoading(bool)
-{
-	// A reasonable waiting time for any script to execute
-	m_qTimer->start(m_params.timer_ms);
-}
-
-void Snapshot::slotDoneWaiting()
+void Snapshot::slot_Timer_timeout()
 {
 	// get image data
 	const QSize imageSize = _getImageSize();
@@ -160,7 +154,13 @@ void Snapshot::slotDoneWaiting()
 	QApplication::quit();
 }
 
-void Snapshot::slotGotReply(QNetworkReply *reply)
+void Snapshot::slot_WebPage_loadFinished(bool)
+{
+	// A reasonable waiting time for any script to execute
+	m_qTimer->start(m_params.timer_ms);
+}
+
+void Snapshot::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 {
 	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
 	const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
@@ -174,7 +174,7 @@ void Snapshot::slotGotReply(QNetworkReply *reply)
 	}
 }
 
-void Snapshot::slotSslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
+void Snapshot::slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
 {
 	reply->ignoreSslErrors();
 }
