@@ -14,25 +14,13 @@
 class Gyotaku : QObject
 {
 	Q_OBJECT
-
-	QWebPage *m_qWebPage;
-	QWebView *m_qWebView;
-	QTimer   *m_qTimer;
-
-	size_t m_requestCount;
-
-	PARAMS m_params;
-
 public:
-	Gyotaku(QObject *parent = NULL);
+	Gyotaku(const PARAMS &params, QObject *parent = NULL);
 	~Gyotaku();
-	void rub(const QUrl &url, const PARAMS &params);
+	void setParams(const PARAMS &params);
+	void rub(const QUrl &url);
 
 private:
-	QWebPage *_createWebPage() const;
-	QWebView *_createWebView() const;
-	QTimer   *_createTimer();
-
 	QSize   _getImageSize();
 	QPixmap _scaleImage (const QPixmap &pixmap) const;
 	bool    _outputImage(const QPixmap &pixmap) const;
@@ -43,6 +31,19 @@ private slots:
 	void slot_Timer_timeout();
 	void slot_NetworkAccessManager_finished(QNetworkReply *reply);
 	void slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+
+signals:
+	void signal_paramsChanged(const PARAMS &params);
+
+private:
+	QWebPage *m_qWebPage;
+	QWebView *m_qWebView;
+	QTimer   *m_qTimer;
+
+	QNetworkRequest m_request;
+	size_t          m_requestCount;
+
+	PARAMS m_params;
 };
 
 #endif // GYOTAKU_H

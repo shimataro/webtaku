@@ -2,6 +2,7 @@
  * Customized QWebPage
  * @author shimataro
  * <ul>
+ *  <li>slot for changing parameters</li>
  *  <li>customized user-agent</li>
  *  <li>ignore JavaScript alert/confirm</li>
  * </ul>
@@ -16,11 +17,9 @@
 
 class CustomWebPage : public QWebPage
 {
+	Q_OBJECT
 public:
-	CustomWebPage(const QString &userAgent, QObject *parent = NULL);
-
-private:
-	QString m_userAgent;
+	CustomWebPage(QObject *parent = NULL);
 
 protected:
 	QString userAgentForUrl(const QUrl &url) const;
@@ -29,6 +28,10 @@ protected:
 
 public slots:
 	bool shouldInterruptJavaScript();
+	void slot_Gyotaku_paramsChanged(const PARAMS &params);
+
+private:
+	QString m_userAgent;
 };
 
 #endif // CUSTOMWEBPAGE_H

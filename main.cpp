@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 		return EC_INVALIDARGUMENT;
 	}
 
-	Gyotaku gyotaku;
-	gyotaku.rub(url, params);
+	Gyotaku gyotaku(params);
+	gyotaku.rub(url);
 
 	return app.exec();
 }

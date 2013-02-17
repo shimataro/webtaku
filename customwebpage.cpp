@@ -3,9 +3,8 @@
  */
 #include "customwebpage.h"
 
-CustomWebPage::CustomWebPage(const QString &userAgent, QObject *parent) : QWebPage(parent)
+CustomWebPage::CustomWebPage(QObject *parent) : QWebPage(parent)
 {
-	m_userAgent = userAgent;
 }
 
 QString CustomWebPage::userAgentForUrl(const QUrl &url) const
@@ -26,7 +25,17 @@ bool CustomWebPage::javaScriptConfirm(QWebFrame * /* originatingFrame */, const 
 	return false;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// slot methods
+
 bool CustomWebPage::shouldInterruptJavaScript()
 {
 	return true;
+}
+
+void CustomWebPage::slot_Gyotaku_paramsChanged(const PARAMS &params)
+{
+	m_userAgent = params.userAgent;
+	setViewportSize(params.minSize);
 }

@@ -5,15 +5,36 @@
 #include <QApplication>
 #include "gyotaku.h"
 #include "customwebpage.h"
+#include "customwebview.h"
 
 
-Gyotaku::Gyotaku(QObject *parent) : QObject(parent)
+Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 {
+	CustomWebPage *qWebPage = new CustomWebPage;
+	CustomWebView *qWebView = new CustomWebView;
+	QTimer        *qTimer   = new QTimer(this);
+
+	QWebFrame *qWebFrame = qWebPage->mainFrame();
+	qWebFrame->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+	qWebView->setPage(qWebPage);
+
+	QNetworkAccessManager *qNetworkAccessManager = qWebPage->networkAccessManager();
+
+	// setup signal/slot
+	connect(qTimer               , SIGNAL(timeout())                                 , SLOT(slot_Timer_timeout()));
+	connect(qWebPage             , SIGNAL(loadFinished(bool))                        , SLOT(slot_WebPage_loadFinished(bool)));
+	connect(qNetworkAccessManager, SIGNAL(finished(QNetworkReply*))                  , SLOT(slot_NetworkAccessManager_finished(QNetworkReply*)));
+	connect(qNetworkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slot_NetworkAccessManager_sslErrors(QNetworkReply*,QList<QSslError>)));
+
+	connect(this, SIGNAL(signal_paramsChanged(PARAMS)), qWebPage, SLOT(slot_Gyotaku_paramsChanged(PARAMS)));
+	connect(this, SIGNAL(signal_paramsChanged(PARAMS)), qWebView, SLOT(slot_Gyotaku_paramsChanged(PARAMS)));
+
+	m_qWebPage = qWebPage;
+	m_qWebView = qWebView;
+	m_qTimer   = qTimer;
 	m_requestCount = 0;
 
-	m_qWebPage = NULL;
-	m_qWebView = NULL;
-	m_qTimer = NULL;
+	setParams(params);
 }
 
 Gyotaku::~Gyotaku()
@@ -23,52 +44,23 @@ Gyotaku::~Gyotaku()
 	delete m_qTimer; m_qTimer = NULL;
 }
 
-void Gyotaku::rub(const QUrl &url, const PARAMS &params)
+void Gyotaku::setParams(const PARAMS &params)
 {
 	m_params = params;
+	m_request.setRawHeader("Cookie", params.cookie);
 
-	m_qWebPage = _createWebPage();
-	m_qWebView = _createWebView();
-	m_qTimer   = _createTimer();
+	emit signal_paramsChanged(params);
+}
 
-	// setup signal/slot
-	connect(m_qTimer                          , SIGNAL(timeout())                                 , SLOT(slot_Timer_timeout()));
-	connect(m_qWebPage                        , SIGNAL(loadFinished(bool))                        , SLOT(slot_WebPage_loadFinished(bool)));
-	connect(m_qWebPage->networkAccessManager(), SIGNAL(finished(QNetworkReply*))                  , SLOT(slot_NetworkAccessManager_finished(QNetworkReply*)));
-	connect(m_qWebPage->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slot_NetworkAccessManager_sslErrors(QNetworkReply*,QList<QSslError>)));
-
-	QNetworkRequest request(url);
-	request.setRawHeader("Cookie", params.cookie);
-
-	// setup page
-	m_qWebPage->setViewportSize(params.minSize);
-	m_qWebPage->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-	m_qWebPage->mainFrame()->load(request);
+void Gyotaku::rub(const QUrl &url)
+{
+	m_request.setUrl(url);
+	m_qWebPage->mainFrame()->load(m_request);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
-
-QWebPage *Gyotaku::_createWebPage() const
-{
-	QWebPage *qWebPage = new CustomWebPage(m_params.userAgent);
-	return qWebPage;
-}
-
-QWebView *Gyotaku::_createWebView() const
-{
-	QWebView *qWebView = new QWebView;
-	qWebView->setPage(m_qWebPage);
-	qWebView->setMinimumSize(m_params.minSize);
-	return qWebView;
-}
-
-QTimer *Gyotaku::_createTimer()
-{
-	QTimer *qTimer = new QTimer(this);
-	return qTimer;
-}
 
 QSize Gyotaku::_getImageSize()
 {
