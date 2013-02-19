@@ -16,14 +16,14 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--cookie=<cookie>] [--min-size=<minimum-width>x<minimum-height>] [--scaled-size=<scaled-width>x<scaled-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests>] [--silent] <url>" << std::endl;
+		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--accept-language=<accept-language>] [--cookie=<cookie>] [--min-size=<minimum-width>x<minimum-height>] [--scaled-size=<scaled-width>x<scaled-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests>] [--silent] <url>" << std::endl;
 		return -1;
 	}
 
 	QApplication app(argc, argv);
 
 	QUrl url;
-	PARAMS params = {"", "PPM", "", "", QSize(1024, 768), QSize(0, 0), false, false, 3, 1024, -1};
+	PARAMS params = {"", "PPM", "", "", "", QSize(1024, 768), QSize(0, 0), false, false, 3, 1024, -1};
 	if(!parseParams(app.arguments(), url, params))
 	{
 		return EC_INVALIDARGUMENT;
@@ -45,17 +45,18 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 {
 	bool result = true;
 
-	QRegExp regexp_format      ("--format=(\\w+)");
-	QRegExp regexp_output      ("--output=(.*)");
-	QRegExp regexp_user_agent  ("--user-agent=(.*)");
-	QRegExp regexp_cookie      ("--cookie=(.*)");
-	QRegExp regexp_min_size    ("--min-size=(\\d+)?([xX])(\\d+)?");
-	QRegExp regexp_scaled_size ("--scaled-size=(\\d+)?([xX])(\\d+)?");
-	QRegExp regexp_crop        ("--crop");
-	QRegExp regexp_timer       ("--timer=(\\d+)");
-	QRegExp regexp_max_requests("--max-requests=(\\d+)");
-	QRegExp regexp_silent      ("--silent");
-	QRegExp regexp_url         ("^\\w+://");
+	const QRegExp regexp_format         ("--format=(\\w+)");
+	const QRegExp regexp_output         ("--output=(.*)");
+	const QRegExp regexp_user_agent     ("--user-agent=(.*)");
+	const QRegExp regexp_accept_language("--accept-language=(.*)");
+	const QRegExp regexp_cookie         ("--cookie=(.*)");
+	const QRegExp regexp_min_size       ("--min-size=(\\d+)?([xX])(\\d+)?");
+	const QRegExp regexp_scaled_size    ("--scaled-size=(\\d+)?([xX])(\\d+)?");
+	const QRegExp regexp_crop           ("--crop");
+	const QRegExp regexp_timer          ("--timer=(\\d+)");
+	const QRegExp regexp_max_requests   ("--max-requests=(\\d+)");
+	const QRegExp regexp_silent         ("--silent");
+	const QRegExp regexp_url            ("^\\w+://");
 
 	QStringList::const_iterator p = arguments.begin();
 	while(++p != arguments.end())
@@ -74,6 +75,11 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 		if(regexp_user_agent.exactMatch(arg))
 		{
 			params.userAgent = regexp_user_agent.cap(1);
+			continue;
+		}
+		if(regexp_accept_language.exactMatch(arg))
+		{
+			params.acceptLanguage.append(regexp_accept_language.cap(1) + ",");
 			continue;
 		}
 		if(regexp_cookie.exactMatch(arg))

@@ -48,7 +48,8 @@ Gyotaku::~Gyotaku()
 void Gyotaku::setParams(const PARAMS &params)
 {
 	m_params = params;
-	m_request.setRawHeader("Cookie", params.cookie);
+	m_request.setRawHeader("Cookie"         , params.cookie);
+	m_request.setRawHeader("Accept-Language", params.acceptLanguage);
 
 	emit signal_paramsChanged(params);
 }

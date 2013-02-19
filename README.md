@@ -16,7 +16,7 @@
     sudo apt-get -y install xvfb
 
 ## build & install
-(will be installed in /usr/local/bin and /usr/local/src)
+(will be installed into /usr/local/bin and /usr/local/src)
 
     git clone https://github.com/shimataro/webtaku.git
     cd webtaku
@@ -51,6 +51,13 @@
 
     # use "--output" option because xvfb-run redirects stderr to stdout
     xvfb-run --server-args="-screen 0, 1024x768x24" webtaku --output=output.png "http://example.com/"
+
+### "--accept-language" to set acceptable languages list
+
+    webtaku --accept-language="en-US,jp;q=0.8,en;q=0.6" "http://example.com/" >output.ppm
+
+    # you can use multiple "--accept-language" options to set multiple acceptable languages in this order
+    webtaku --accept-language="en-US" --accept-language=="jp;q=0.8" --accept-language="en;q=0.6" "http://example.com/" >output.ppm
 
 ### "--cookie" to set cookie
 
