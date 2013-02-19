@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	PARAMS params = {"", "PPM", "", "", "", QSize(1024, 768), QSize(0, 0), false, false, 3, 1024, -1};
+	PARAMS params = {"", "PPM", "", "", "", QSize(1024, 768), QSize(0, 0), false, false, 500, 1024, -1};
 	if(!parseParams(app.arguments(), url, params))
 	{
 		return EC_INVALIDARGUMENT;
