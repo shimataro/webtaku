@@ -101,8 +101,7 @@ QPixmap Gyotaku::_scaleImage(const QPixmap &pixmap) const
 		return pixmap.scaledToWidth (scaledSize.width() , Qt::SmoothTransformation);
 	}
 
-	const Qt::AspectRatioMode aspectRatioMode = m_params.scaleMax ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
-	return pixmap.scaled(scaledSize, aspectRatioMode, Qt::SmoothTransformation);
+	return pixmap.scaled(scaledSize, m_params.aspectRatioMode, Qt::SmoothTransformation);
 }
 
 bool Gyotaku::_outputImage(const QPixmap &pixmap) const

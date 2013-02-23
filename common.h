@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <Qt>
 #include <QString>
 #include <QSize>
 #include <stddef.h>
@@ -15,18 +16,18 @@ enum EXITCODE
 
 struct PARAMS
 {
-	QString    outputFilename;
-	QString    outputFormat;
-	QString    userAgent;
-	QByteArray acceptLanguage;
-	QByteArray cookie;
-	QSize      minSize;
-	QSize      scaledSize;
-	bool       scaleMax;
-	bool       crop;
-	int        timer_ms;
-	size_t     maxRequests;
-	int        quality;
+	QString             outputFilename;
+	QString             outputFormat;
+	QString             userAgent;
+	QByteArray          acceptLanguage;
+	QByteArray          cookie;
+	QSize               minSize;
+	QSize               scaledSize;
+	Qt::AspectRatioMode aspectRatioMode;
+	bool                crop;
+	int                 timer_ms;
+	size_t              maxRequests;
+	int                 quality;
 };
 
 #endif // COMMON_H
