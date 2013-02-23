@@ -80,6 +80,9 @@
     # use upper case "X" to resize by long-side (this will create 400x300 image)
     webtaku --scaled-size=300X300 "http://example.com/" >output.ppm
 
+    # use plus "+" NOT to keep aspect ratio (this will create 300x300 image)
+    webtaku --scaled-size=300+300 "http://example.com/" >output.ppm
+
     # omit height to resize by width (300x225)
     webtaku --scaled-size=300x "http://example.com/" >output.ppm
 

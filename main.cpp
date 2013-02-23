@@ -50,8 +50,8 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	const QRegExp regexp_user_agent     ("--user-agent=(.*)");
 	const QRegExp regexp_accept_language("--accept-language=(.*)");
 	const QRegExp regexp_cookie         ("--cookie=(.*)");
-	const QRegExp regexp_min_size       ("--min-size=(\\d+)?([xX])(\\d+)?");
-	const QRegExp regexp_scaled_size    ("--scaled-size=(\\d+)?([xX])(\\d+)?");
+	const QRegExp regexp_min_size       ("--min-size=(\\d+)?([xX+])(\\d+)?");
+	const QRegExp regexp_scaled_size    ("--scaled-size=(\\d+)?([xX+])(\\d+)?");
 	const QRegExp regexp_crop           ("--crop");
 	const QRegExp regexp_timer          ("--timer=(\\d+)");
 	const QRegExp regexp_max_requests   ("--max-requests=(\\d+)");
@@ -103,9 +103,9 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 		}
 		if(regexp_scaled_size.exactMatch(arg))
 		{
-			const int width  = regexp_scaled_size.cap(1).toInt();
-			const int height = regexp_scaled_size.cap(3).toInt();
-			const QString mode = regexp_scaled_size.cap(2);
+			const int     width  = regexp_scaled_size.cap(1).toInt();
+			const int     height = regexp_scaled_size.cap(3).toInt();
+			const QString mode   = regexp_scaled_size.cap(2);
 			if(width > 0)
 			{
 				params.scaledSize.setWidth (width);
@@ -118,6 +118,10 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 			if(mode == "X")
 			{
 				params.aspectRatioMode = Qt::KeepAspectRatioByExpanding;
+			}
+			if(mode == "+")
+			{
+				params.aspectRatioMode = Qt::IgnoreAspectRatio;
 			}
 			continue;
 		}
