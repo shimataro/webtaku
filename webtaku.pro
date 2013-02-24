@@ -36,6 +36,7 @@ CONFIG(debug, debug|release) {
 CONFIG(release, debug|release) {
 	QMAKE_CFLAGS   += -Ofast
 	QMAKE_CXXFLAGS += -Ofast
+	QMAKE_LFLAGS   += -Ofast
 
 # installation
 	target.path  = /usr/local/bin
