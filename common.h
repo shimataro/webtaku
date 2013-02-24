@@ -6,14 +6,20 @@
 #include <QSize>
 #include <stddef.h>
 
+/**
+ * enumeration of exit code
+ */
 enum EXITCODE
 {
 	EC_SUCCESS         = 0,
 	EC_INVALIDARGUMENT = 1,
 	EC_TOOMANYREQUESTS = 2,
-	EC_FAILEDTOSAVE    = 3,
+	EC_FAILEDTOSAVE    = 3
 };
 
+/**
+ * GYOTAKU parameters
+ */
 struct PARAMS
 {
 	QString             outputFilename;
