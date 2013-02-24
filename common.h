@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <Qt>
+#include <QByteArray>
 #include <QString>
 #include <QSize>
 #include <stddef.h>

@@ -44,7 +44,7 @@ CONFIG(release, debug|release) {
 #	target.extra = <commands>
 
 	source.path  = /usr/local/src/$${PROJECT}
-	source.files = *.cpp *.h *.pro LICENSE README.md
+	source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md
 #	source.extra = <commands>
 
 	INSTALLS += target source
