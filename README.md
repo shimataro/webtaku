@@ -24,6 +24,10 @@
     make
     sudo make install
 
+if you are using Intel C++ Compiler, run `qmake` as following
+
+    qmake CONFIG+=release QMAKE_CC=icc QMAKE_CXX=icpc QMAKE_LINK=icpc
+
 ---
 
 # Usage
@@ -80,8 +84,8 @@
     # use upper case "X" to resize by long-side (this will create 400x300 image)
     webtaku --scaled-size=300X300 "http://example.com/" >output.ppm
 
-    # use plus "+" NOT to keep aspect ratio (this will create 300x300 image)
-    webtaku --scaled-size=300+300 "http://example.com/" >output.ppm
+    # use colon ":" NOT to keep aspect ratio (this will create 300x300 image)
+    webtaku --scaled-size=300:300 "http://example.com/" >output.ppm
 
     # omit height to resize by width (300x225)
     webtaku --scaled-size=300x "http://example.com/" >output.ppm
@@ -113,4 +117,4 @@
 
 ### for more complex conversion, use ImageMagick as below
 
-    webtaku --min-size=1200x900 "http://example.com/" | convert -rotate +90 -resize 320x320! - output.ppm
+    webtaku --min-size=1200x900 "http://example.com/" | convert -crop 500x500+100+100 -rotate +90 -resize 250x250 - output.ppm

@@ -16,7 +16,9 @@ int main(int argc, char *argv[])
 	if(argc < 2)
 	{
 		std::cerr << "Usage:" << std::endl;
-		std::cerr << argv[0] << " [--format=<BMP|JPEG|PNG|PPM|XBM|XPM>] [--output=<output-filename>] [--user-agent=<user-agent>] [--accept-language=<accept-language>] [--cookie=<cookie>] [--min-size=<minimum-width>x<minimum-height>] [--scaled-size=<scaled-width>x<scaled-height>] [--crop] [--timer=<milliseconds>] [--max-requests=<max-requests>] [--silent] <url>" << std::endl;
+		std::cerr << argv[0] << " [OPTIONS] <url>" << std::endl;
+		std::cerr << std::endl;
+		std::cerr << "see manpage for more information" << std::endl;
 		return -1;
 	}
 
@@ -50,8 +52,8 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	const QRegExp regexp_user_agent     ("--user-agent=(.*)");
 	const QRegExp regexp_accept_language("--accept-language=(.*)");
 	const QRegExp regexp_cookie         ("--cookie=(.*)");
-	const QRegExp regexp_min_size       ("--min-size=(\\d+)?([xX+])(\\d+)?");
-	const QRegExp regexp_scaled_size    ("--scaled-size=(\\d+)?([xX+])(\\d+)?");
+	const QRegExp regexp_min_size       ("--min-size=(\\d+)?([xX:])(\\d+)?");
+	const QRegExp regexp_scaled_size    ("--scaled-size=(\\d+)?([xX:])(\\d+)?");
 	const QRegExp regexp_crop           ("--crop");
 	const QRegExp regexp_timer          ("--timer=(\\d+)");
 	const QRegExp regexp_max_requests   ("--max-requests=(\\d+)");
@@ -119,7 +121,7 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 			{
 				params.aspectRatioMode = Qt::KeepAspectRatioByExpanding;
 			}
-			if(mode == "+")
+			if(mode == ":")
 			{
 				params.aspectRatioMode = Qt::IgnoreAspectRatio;
 			}

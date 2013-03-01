@@ -5,6 +5,7 @@ QT += core webkit network
 PROJECT  = webtaku
 LANGUAGE = C++
 TEMPLATE = app
+LOCATION = /usr/local/
 #TARGET   = <target_file>
 
 
@@ -39,13 +40,17 @@ CONFIG(release, debug|release) {
 	QMAKE_LFLAGS   += -Ofast
 
 # installation
-	target.path  = /usr/local/bin
+	target.path  = $${LOCATION}bin
 	target.files = $${TARGET}
 #	target.extra = <commands>
 
-	source.path  = /usr/local/src/$${PROJECT}
-	source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md
+	source.path  = $${LOCATION}src/$${PROJECT}
+	source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md man
 #	source.extra = <commands>
 
-	INSTALLS += target source
+	man.path  = $${LOCATION}share/man
+	man.files = man/*
+#	man.extra = <commands>
+
+	INSTALLS += target source man
 }

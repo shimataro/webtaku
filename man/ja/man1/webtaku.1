@@ -1,0 +1,180 @@
+.TH webtaku 1 "2013年03月01日" "shimataro" "ユーティリティ"
+
+
+.\"========================================
+.SH 名前
+\fBwebtaku\fR \- ウェブページのキャプチャ画像生成ツール
+
+
+.\"========================================
+.SH 概要
+\fBwebtaku\fR [\fIOPTIONS\fR] <\fIURL\fR>
+
+
+.\"========================================
+.SH 説明
+\fBwebtaku\fRは、WebKitベースのキャプチャ画像生成ツールです。
+
+
+.\"========================================
+.SH オプション
+.TP
+\fB\-\-format\fR=\fIFORMAT\fR
+出力する画像形式を指定します。
+使用可能な形式は\fBBMP\fR/\fBJPG\fR/\fBPNG\fR/\fBPPM\fR/\fBXBM\fR/\fBXPM\fRです。
+省略した場合は\fBPPM\fR形式で出力されます。
+
+.TP
+\fB\-\-output\fR=\fIFILENAME\fR
+保存先のファイル名を指定します。
+保存形式は拡張子から自動的に決定され、\fB\-\-format\fRオプションは無視されます。
+
+.TP
+\fB\-\-accept\-language\fR=\fIACCEPT_LANGUAGE\fR
+\fBAccept\-Language\fRヘッダを指定します。
+このヘッダをもとに表示言語を切り替えているページがあれば、表示言語を指定できます。
+複数の\fB\-\-accept\-language\fRオプションを指定すると、その順番でヘッダを設定します。
+
+.TP
+\fB\-\-cookie\fR=\fICOOKIE\fR
+\fBCookie\fRヘッダを指定します。
+セッションIDを適切に設定すれば会員用ページなどもキャプチャできる場合があります。
+複数の\fB\-\-cookie\fRオプションを指定すると、その順番でヘッダを設定します。
+
+.TP
+\fB\-\-user\-agent\fR=\fIUSER_AGENT\fR
+\fBUser\-Agent\fRヘッダを指定します。
+このヘッダを適切に設定すれば、特定のブラウザで見た際のページ、携帯用ページ、スマートフォン用ページ等もキャプチャできる場合があります。
+
+.TP
+\fB\-\-min\-size\fR=[\fIWIDTH\fR]x[\fIHEIGHT\fR]
+画像の最小サイズを指定します。
+ブラウザをこのサイズにした状態でスクリーンショットを取るようなイメージです。
+サイズが足りない場合は自動的に調整されます。
+\fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
+省略した場合は\fB1024x768\fRが設定されます。
+
+.TP
+\fB\-\-crop\fR
+サイズが足りなくても自動的に調整せず、強制的に最小サイズ(\fB\-\-min\-size\fR)で切り取ります。
+
+.TP
+\fB\-\-scaled\-size\fR=[\fIWIDTH\fR]x[\fIHEIGHT\fR]
+画像を、縦横比を保った状態で\fIWIDTH\fRx\fIHEIGHT\fRに収まるように拡大・縮小します。
+変換後の画像は\fIWIDTH\fRx\fIHEIGHT\fRより大きくはなりません。
+\fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
+
+.TP
+\fB\-\-scaled\-size\fR=[\fIWIDTH\fR]X[\fIHEIGHT\fR]
+大文字の"\fBX\fR"を使うと、縦横比を保った状態で少なくとも\fIWIDTH\fRx\fIHEIGHT\fR以上になるように拡大・縮小します。
+変換後の画像は\fIWIDTH\fRx\fIHEIGHT\fRより小さくはなりません。
+\fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
+
+.TP
+\fB\-\-scaled\-size\fR=[\fIWIDTH\fR]:[\fIHEIGHT\fR]
+コロン記号"\fB:\fR"を使うと、\fB縦横比を保持せずに\fR\fIWIDTH\fRx\fIHEIGHT\fRになるように拡大・縮小します。
+変換後の画像はちょうど\fIWIDTH\fRx\fIHEIGHT\fRになります。
+\fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
+
+.TP
+\fB\-\-timer\fR=\fITIME\fR
+ウェブページのロードが完了してから画像を生成するまでの遅延時間を\fBミリ秒単位で\fR指定します。
+JavaScriptによるDOM調整が終わるのに十分な時間を設定してください。
+省略した場合は\fB500\fRが設定されます。
+
+.TP
+\fB\-\-silent\fR
+パラメータのエラー時を除き、一切のメッセージを標準エラー出力に出力しません。
+
+
+.\"========================================
+.SH 使用例
+.TP
+\fBwebtaku\fR "http://example.com/" >output.ppm
+標準出力にPPM形式で出力し、\fBoutput.ppm\fRという名前で保存します。
+
+.TP
+\fBwebtaku\fR \-\-format=BMP "http://example.com/" >output.bmp
+標準出力にBMP形式で出力し、\fBoutput.bmp\fRという名前で保存します。
+
+.TP
+\fBwebtaku\fR \-\-output=output.png "http://example.com/"
+\fBoutput.png\fRという名前で、PNG形式で保存します。
+保存形式は拡張子から自動的に決定され、\fB\-\-format\fRオプションは無視されます。
+
+.TP
+\fBwebtaku\fR \-\-accept\-language="en\-US,jp;q=0.8,en;q=0.6" "http://example.com/" >output.ppm
+英語（米国）・日本語・英語の順でページの言語を指定して取得します。
+
+.TP
+\fBwebtaku\fR \-\-accept\-language="en\-US" \-\-accept\-language=="jp;q=0.8" \-\-accept\-language="en;q=0.6" "http://example.com/" >output.ppm
+\fB\-\-accept\-language\fRを複数回指定できます。これは上記と同じ結果になります。
+
+.TP
+\fBwebtaku\fR \-\-cookie="name1=value1;name2=value2" "http://example.com/" >output.ppm
+Cookieの\fBname1\fRに\fBvalue1\fRを、\fBname2\fRに\fBvalue2\fRを設定します。
+
+.TP
+\fBwebtaku\fR \-\-cookie="name1=value1" \-\-cookie="name2=value2" "http://example.com/" >output.ppm
+\fB\-\-cookie\fRを複数回指定できます。これは上記と同じ結果になります。
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300x300 "http://example.com/" >output.ppm
+縦横比を保存して画像をリサイズします（デフォルトのウインドウサイズが1024x768なので、この場合は300x225の画像が作成されます）
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300X300 "http://example.com/" >output.ppm
+大文字の\fBX\fRを使うと、長辺指定で縦横比を保存して画像をリサイズします（この場合は400x300の画像が作成されます）
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300:300 "http://example.com/" >output.ppm
+コロン記号（\fB:\fR）を使うと、\fB縦横比を保持せずに\fR画像をリサイズします。
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300x "http://example.com/" >output.ppm
+高さを省略すると、幅に合わせてサイズ変更できます（この場合は300x225の画像が作成されます）
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=x300 "http://example.com/" >output.ppm
+幅を省略すると、高さに合わせてサイズ変更できます（この場合は400x300の画像が作成されます）
+
+.TP
+\fBwebtaku\fR \-\-crop "http://example.com/" >output.ppm
+画像を拡大せずに、最小ウインドウサイズで画像を切り取ります。
+
+.TP
+\fBwebtaku\fR \-\-user\-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" \-\-min\-size=1024x768 "http://example.com/" >output.ppm
+iPadで見た時のウェブページ画像を作成します。
+
+.TP
+\fBwebtaku\fR \-\-min\-size=1200x900 \-\-crop \-\-scaled\-size=320x240 \-\-output=output.png "http://example.com/"
+1200x900のウインドウサイズでキャプチャしたウェブページを、320x240に縮小してサムネイル化します。
+
+.TP
+\fBwebtaku\fR \-\-min\-size=1200x900 "http://example.com/" | convert \-crop 500x500+100+100 \-rotate +90 \-resize 250x250 \- output.ppm
+複雑な画像処理を行うには、このようにパイプを使ってImageMagickで処理してください。
+
+.TP
+\fBxvfb\-run\fR \-\-server\-args="\-screen 0, 1024x768x24" \fBwebtaku\fR \-\-output=output.png "http://example.com/"
+LAMPサーバのようにXや他のGUIが搭載されていないマシン上で使う場合は、このように仮想フレームバッファ上でコマンドを実行してください。
+
+\fB注意\fR:
+\fBxvfb\-run\fRは標準エラー出力の内容を標準出力にリダイレクトするため、ファイルへの保存は標準出力をリダイレクトするのではなく、必ず\fB\-\-output\fRでファイル名を直接指定してください。
+さもないと標準エラー出力の内容まで画像ファイルに保存され、結果として壊れた画像ファイルが生成されてしまいます。
+
+
+.\"========================================
+.SH バージョン情報
+このmanpageは、\fBwebtaku\fR version 1.0について記述しています。
+
+
+.\"========================================
+.SH 名前の由来
+\fBwebtaku\fRの名前は"\fBweb\fR"＋"魚拓(gyo\fBtaku\fR)"に由来します。
+似たような名前の「ウェブ魚拓」というサービスがあることはもちろん知っていますが、HTMLファイル等を保存してウェブサイトを再現する「ウェブ魚拓」より、ページそのものを画像化する本ツールのほうが「魚拓」のイメージに合っているのではないかと勝手に思っています。
+
+
+.\"========================================
+.SH プロジェクトページ
+\fBwebtaku\fRのプロジェクトページは"https://github.com/shimataro/webtaku"です。
+不具合や要望等がありましたらご連絡ください。

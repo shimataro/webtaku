@@ -1,0 +1,171 @@
+.TH webtaku 1 "01/03/2013" "shimataro" "Utility"
+
+
+.\"========================================
+.SH NAME
+\fBwebtaku\fR \- webpage's image generator
+
+
+.\"========================================
+.SH SYNOPSIS
+\fBwebtaku\fR [\fIOPTIONS\fR] <\fIURL\fR>
+
+
+.\"========================================
+.SH DESCRIPTION
+\fBwebtaku\fR is webpage's image generator based on WebKit
+
+
+.\"========================================
+.SH OPTIONS
+.TP
+\fB\-\-format\fR=\fIFORMAT\fR
+Specify output format.
+Available formats are \fBBMP\fR/\fBJPG\fR/\fBPNG\fR/\fBPPM\fR/\fBXBM\fR/\fBXPM\fR.
+Default format is \fBPPM\fR.
+
+.TP
+\fB\-\-output\fR=\fIFILENAME\fR
+Specify output filename.
+File format will be determined by extension (\fB\-\-format\fR option will be ignored).
+
+.TP
+\fB\-\-accept\-language\fR=\fIACCEPT_LANGUAGE\fR
+Specify \fBAccept\-Language\fR header.
+You can use multiple \fB\-\-accept\-language\fR options to set multiple acceptable languages in this order.
+
+.TP
+\fB\-\-cookie\fR=\fICOOKIE\fR
+Set \fBCookie\fR header.
+You can use multiple \fB\-\-cookie\fR options to set multiple cookies in this order.
+
+.TP
+\fB\-\-user\-agent\fR=\fIUSER_AGENT\fR
+Specify \fBUser\-Agent\fR header.
+
+.TP
+\fB\-\-min\-size\fR=[\fIWIDTH\fR]x[\fIHEIGHT\fR]
+Specify minimum viewport size (image will be extended automatically).
+You can specify \fIWIDTH\fR or \fIHEIGHT\fR only.
+If omitted, default size is \fB1024x768\fR.
+
+.TP
+\fB\-\-crop\fR
+Crop image by minimum viewport size(\fB\-\-min\-size\fR).
+
+.TP
+\fB\-\-scaled\-size\fR=[\fIWIDTH\fR]x[\fIHEIGHT\fR]
+Scale image to \fIWIDTH\fRx\fIHEIGHT\fR by short side, keeping aspect ratio.
+This means scaled image will be \fIWIDTH\fRx\fIHEIGHT\fR at most.
+You can specify \fIWIDTH\fR or \fIHEIGHT\fR only.
+
+.TP
+\fB\-\-scaled\-size\fR=[\fIWIDTH\fR]X[\fIHEIGHT\fR]
+Use upper case "\fBX\fR" to scale to \fIWIDTH\fRx\fIHEIGHT\fR by long side, keeping aspect ratio.
+This means scaled image will be \fIWIDTH\fRx\fIHEIGHT\fR at least.
+
+.TP
+\fB\-\-scaled\-size\fR=[\fIWIDTH\fR]:[\fIHEIGHT\fR]
+Use colon "\fB:\fR" to scale to \fIWIDTH\fRx\fIHEIGHT\fR, \fBwithout\fR keeping aspect ratio.
+This means scaled image will be \fIWIDTH\fRx\fIHEIGHT\fR exactly.
+
+.TP
+\fB\-\-timer\fR=\fITIME\fR
+Specify the delay time to generate image after loading webpage completely, \fBin milliseconds\fR.
+Set enough time for JavaScript to adjust DOM.
+Default is \fB500\fR.
+
+.TP
+\fB\-\-silent\fR
+Output no message to stderr.
+
+
+.\"========================================
+.SH EXAMPLES
+.TP
+\fBwebtaku\fR "http://example.com/" >output.ppm
+output image to \fBstdout\fR with \fBPPM\fR format and redirect to file
+
+.TP
+\fBwebtaku\fR \-\-format=BMP "http://example.com/" >output.ppm
+output image to \fBstdout\fR with \fBBMP\fR format and redirect to file
+
+.TP
+\fBwebtaku\fR \-\-output=output.png "http://example.com/"
+output image to \fBoutput.png\fR with PNG format
+
+.TP
+\fBwebtaku\fR \-\-accept\-language="en\-US,jp;q=0.8,en;q=0.6" "http://example.com/" >output.ppm
+specify \fBAccept\-Language\fR header
+
+.TP
+\fBwebtaku\fR \-\-accept\-language="en\-US" \-\-accept\-language=="jp;q=0.8" \-\-accept\-language="en;q=0.6" "http://example.com/" >output.ppm
+same as above example
+
+.TP
+\fBwebtaku\fR \-\-cookie="name1=value1;name2=value2" "http://example.com/" >output.ppm
+specify cookies
+
+.TP
+\fBwebtaku\fR \-\-cookie="name1=value1" \-\-cookie="name2=value2" "http://example.com/" >output.ppm
+same as above example
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300x300 "http://example.com/" >output.ppm
+this will create 300x225 image
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300X300 "http://example.com/" >output.ppm
+use upper case "\fBX\fR" to resize by long\-side (this will create 400x300 image)
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300:300 "http://example.com/" >output.ppm
+use colon "\fB:\fR" \fBNOT\fR to keep aspect ratio (this will create 300x300 image)
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=300x "http://example.com/" >output.ppm
+omit height to resize by width (300x225)
+
+.TP
+\fBwebtaku\fR \-\-scaled\-size=x300 "http://example.com/" >output.ppm
+omit width to resize by height (400x300)
+
+.TP
+\fBwebtaku\fR \-\-crop "http://example.com/" >output.ppm
+crop by minimum viewport size
+
+.TP
+\fBwebtaku\fR \-\-user\-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" \-\-min\-size=1024x768 "http://example.com/" >output.ppm
+generate image of iPad's view
+
+.TP
+\fBwebtaku\fR \-\-min\-size=1200x900 \-\-crop \-\-scaled\-size=320x240 \-\-output=output.png "http://example.com/"
+generate 320x240 thumbnail from 1200x900 viewport
+
+.TP
+\fBwebtaku\fR \-\-min\-size=1200x900 "http://example.com/" | convert \-crop 500x500+100+100 \-rotate +90 \-resize 250x250 \- output.ppm
+for more complex conversion, use ImageMagick as above.
+
+.TP
+\fBxvfb\-run\fR \-\-server\-args="\-screen 0, 1024x768x24" \fBwebtaku\fR \-\-output=output.png "http://example.com/"
+use virtual frame buffer when the machine has no X or any other GUI systems (such as LAMP web servers).
+
+\fBNOTE\fR:
+\fBDO NOT\fR use stdout redirection because \fBxvfb\-run\fR redirects stderr to stdout.
+
+
+.\"========================================
+.SH VERSION INFORMATION
+This manpage describes \fBwebtaku\fR, version 1.0.
+
+
+.\"========================================
+.SH ORIGIN OF THE NAME
+The name of \fBwebtaku\fR comes from "\fBweb\fR" + "gyo\fBtaku\fR".
+"Gyotaku" is Japanese word, which means to print a form of fish to a paper.
+For more information about gyotaku, visit Wikipedia :)
+
+
+.\"========================================
+.SH PROJECT PAGE
+visit \fBwebtaku\fR's project page: https://github.com/shimataro/webtaku
