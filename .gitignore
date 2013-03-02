@@ -15,7 +15,10 @@ Makefile
 moc_*
 *.o
 webtaku
+
+# profile & analysis data
 gmon.out
+callgrind.out.*
 
 # temporary & backup files
 *.bak
