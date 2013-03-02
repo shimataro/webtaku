@@ -78,6 +78,32 @@ Default is \fB500\fR.
 .TP
 \fB\-\-silent\fR
 Output no message to stderr.
+Check exit status whether succeeded or not
+(see below about exit status)
+
+
+.\"========================================
+.SH EXIT STATUS
+\fBWebtaku\fR returns following statuses.
+.TP
+\fB0\fR
+normal termination
+(no errors)
+
+.TP
+\fB1\fR
+invalid arguments
+(e.g., unparseable arguments)
+
+.TP
+\fB2\fR
+too many requests
+(e.g., looped redirects, nested iframes)
+
+.TP
+\fB3\fR
+failed to save file
+(e.g., unavailable format)
 
 
 .\"========================================
