@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 		std::cerr << argv[0] << " [OPTIONS] <url>" << std::endl;
 		std::cerr << std::endl;
 		std::cerr << "see manpage for more information" << std::endl;
-		return -1;
+		return ES_NOPARAMETERS;
 	}
 
 	QApplication app(argc, argv);
