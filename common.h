@@ -8,14 +8,14 @@
 #include <stddef.h>
 
 /**
- * enumeration of exit code
+ * enumeration of exit status
  */
-enum EXITCODE
+enum EXITSTATUS
 {
-	EC_SUCCESS         = 0,
-	EC_INVALIDARGUMENT = 1,
-	EC_TOOMANYREQUESTS = 2,
-	EC_FAILEDTOSAVE    = 3
+	ES_SUCCESS         = 0,
+	ES_INVALIDARGUMENT = 1,
+	ES_TOOMANYREQUESTS = 2,
+	ES_FAILEDTOSAVE    = 3
 };
 
 /**

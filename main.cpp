@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	PARAMS params = {"", "PPM", "", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 1024, -1};
 	if(!parseParams(app.arguments(), url, params))
 	{
-		return EC_INVALIDARGUMENT;
+		return ES_INVALIDARGUMENT;
 	}
 
 	Gyotaku gyotaku(params);

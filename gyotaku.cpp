@@ -140,7 +140,7 @@ void Gyotaku::slot_Timer_timeout()
 	if(!_outputImage(pixmap))
 	{
 		qCritical() << "Fatal error: failed to save image";
-		QApplication::exit(EC_FAILEDTOSAVE);
+		QApplication::exit(ES_FAILEDTOSAVE);
 		return;
 	}
 
@@ -163,7 +163,7 @@ void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 	if(m_requestCount++ > m_params.maxRequests)
 	{
 		qCritical() << "Fatal error: too many requests";
-		QApplication::exit(EC_TOOMANYREQUESTS);
+		QApplication::exit(ES_TOOMANYREQUESTS);
 		return;
 	}
 }
