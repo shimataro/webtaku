@@ -13,7 +13,8 @@
 
 .\"========================================
 .SH DESCRIPTION
-\fBwebtaku\fR is webpage's image generator based on WebKit
+\fBWebtaku\fR is webpage's image generator based on WebKit.
+It's possible to create thumbnail by specifying options.
 
 
 .\"========================================
@@ -77,14 +78,13 @@ Default is \fB500\fR.
 
 .TP
 \fB\-\-silent\fR
-Output no message to stderr.
+Output no message to stderr, except parameter error.
 Check exit status whether succeeded or not
 (see below about exit status)
 
 
 .\"========================================
 .SH EXIT STATUS
-\fBWebtaku\fR returns following statuses.
 .TP
 \fB0\fR
 normal termination
@@ -187,6 +187,22 @@ use virtual frame buffer when the machine has no X or any other GUI systems (suc
 .\"========================================
 .SH VERSION INFORMATION
 This manpage describes \fBwebtaku\fR, version 1.0.
+
+
+.\"========================================
+.SH HISTORY
+.TP
+02/02/2013
+Forked from \fBwebimage\fR (https://github.com/raphaelcruzeiro/webimage).
+Project name was \fBwiget\fR (\fBwget\fR + \fBi\fRmage) at this point.
+
+.TP
+16/02/2013
+Renamed to \fBwebtaku\fR.
+
+.TP
+01/03/2013
+Version 1.0 released
 
 
 .\"========================================

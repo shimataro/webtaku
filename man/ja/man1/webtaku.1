@@ -13,7 +13,8 @@
 
 .\"========================================
 .SH 説明
-\fBwebtaku\fRは、WebKitベースのキャプチャ画像生成ツールです。
+\fBwebtaku\fRは、ウェブページを画像化して様々な形式で保存する、WebKitベースのツールです。
+オプション指定により、サムネイル画像を作成することもできます。
 
 
 .\"========================================
@@ -50,30 +51,30 @@
 \fB\-\-min\-size\fR=[\fIWIDTH\fR]x[\fIHEIGHT\fR]
 画像の最小サイズを指定します。
 ブラウザをこのサイズにした状態でスクリーンショットを取るようなイメージです。
-サイズが足りない場合は自動的に調整されます。
+サイズが足りない（スクロールバーを必要とする）場合は自動的に適切なサイズに拡張されます。
 \fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
 省略した場合は\fB1024x768\fRが設定されます。
 
 .TP
 \fB\-\-crop\fR
-サイズが足りなくても自動的に調整せず、強制的に最小サイズ(\fB\-\-min\-size\fR)で切り取ります。
+サイズが足りなくても拡張せず、強制的に最小サイズ(\fB\-\-min\-size\fR)で切り取ります。
 
 .TP
 \fB\-\-scaled\-size\fR=[\fIWIDTH\fR]x[\fIHEIGHT\fR]
 画像を、縦横比を保った状態で\fIWIDTH\fRx\fIHEIGHT\fRに収まるように拡大・縮小します。
-変換後の画像は\fIWIDTH\fRx\fIHEIGHT\fRより大きくはなりません。
+変換後の画像はこのサイズより大きくはなりません。
 \fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
 
 .TP
 \fB\-\-scaled\-size\fR=[\fIWIDTH\fR]X[\fIHEIGHT\fR]
 大文字の"\fBX\fR"を使うと、縦横比を保った状態で少なくとも\fIWIDTH\fRx\fIHEIGHT\fR以上になるように拡大・縮小します。
-変換後の画像は\fIWIDTH\fRx\fIHEIGHT\fRより小さくはなりません。
+変換後の画像はこのサイズより小さくはなりません。
 \fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
 
 .TP
 \fB\-\-scaled\-size\fR=[\fIWIDTH\fR]:[\fIHEIGHT\fR]
 コロン記号"\fB:\fR"を使うと、\fB縦横比を保持せずに\fR\fIWIDTH\fRx\fIHEIGHT\fRになるように拡大・縮小します。
-変換後の画像はちょうど\fIWIDTH\fRx\fIHEIGHT\fRになります。
+変換後の画像はちょうどこのサイズになります。
 \fIWIDTH\fRのみ、\fIHEIGHT\fRのみの指定もできます。
 
 .TP
@@ -91,7 +92,6 @@ JavaScriptによるDOM調整が終わるのに十分な時間を設定してく�
 
 .\"========================================
 .SH 終了ステータス
-\fBwebtaku\fRは、以下の終了ステータスを返します。
 .TP
 \fB0\fR
 正常終了
@@ -157,7 +157,7 @@ Cookieの\fBname1\fRに\fBvalue1\fRを、\fBname2\fRに\fBvalue2\fRを設定し�
 
 .TP
 \fBwebtaku\fR \-\-scaled\-size=300:300 "http://example.com/" >output.ppm
-コロン記号（\fB:\fR）を使うと、\fB縦横比を保持せずに\fR画像をリサイズします。
+コロン記号(\fB:\fR)を使うと、\fB縦横比を保持せずに\fR画像をリサイズします。
 
 .TP
 \fBwebtaku\fR \-\-scaled\-size=300x "http://example.com/" >output.ppm
@@ -195,6 +195,22 @@ LAMPサーバのようにXや他のGUIが搭載されていないマシン上で
 .\"========================================
 .SH バージョン情報
 このmanpageは、\fBwebtaku\fR version 1.0について記述しています。
+
+
+.\"========================================
+.SH 履歴
+.TP
+2013年02月02日
+\fBwebimage\fR(https://github.com/raphaelcruzeiro/webimage)からフォーク。
+この時点の名前は\fBwiget\fR（\fBwget\fRの\fBi\fRmage版）でした。
+
+.TP
+2013年02月16日
+名前を\fBwebtaku\fRに変更
+
+.TP
+2013年03月01日
+バージョン1.0
 
 
 .\"========================================
