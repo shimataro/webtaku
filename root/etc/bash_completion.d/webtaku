@@ -1,0 +1,24 @@
+# webtaku(1) completion
+
+function __webtaku_complete_wordlist()
+{
+	cat <<COMPLISTS
+--format=
+--output=
+--accept-language=
+--cookie=
+--user-agent=
+--min-size=
+--scaled-size=
+--timer=
+--crop
+--silent
+COMPLISTS
+}
+
+function __webtaku_complete()
+{
+	COMPREPLY=(`compgen -W "$(__webtaku_complete_wordlist)" -- ${COMP_WORDS[COMP_CWORD]}`)
+}
+
+complete -F __webtaku_complete webtaku

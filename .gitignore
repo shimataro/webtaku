@@ -14,7 +14,7 @@ webtaku.pro.user
 Makefile
 moc_*
 *.o
-webtaku
+/webtaku
 
 # profile & analysis data
 gmon.out

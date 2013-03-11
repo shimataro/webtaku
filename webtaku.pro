@@ -39,19 +39,24 @@ CONFIG(release, debug|release) {
 # installation settings
 	unix {
 		LOCATION = /usr/local/
+		LOCATION_COMPLETION = /etc/bash_completion.d/
 
 		target.path  = $${LOCATION}bin
 		target.files = $${TARGET}
 #		target.extra = <commands>
 
 		source.path  = $${LOCATION}src/$${PROJECT}
-		source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md man
+		source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md root
 #		source.extra = <commands>
 
 		man.path  = $${LOCATION}share/man
-		man.files = man/*
+		man.files = root$${LOCATION}man/*
 #		man.extra = <commands>
 
-		INSTALLS += target source man
+		completion.path  = $${LOCATION_COMPLETION}
+		completion.files = root$${LOCATION_COMPLETION}webtaku
+#		completion.extra = <commands>
+
+		INSTALLS += target source man completion
 	}
 }
