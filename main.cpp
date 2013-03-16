@@ -10,6 +10,7 @@
 
 static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params);
 static void silentMsgHandler(QtMsgType type, const char *msg);
+static void version();
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +43,7 @@ int main(int argc, char *argv[])
  * @param arguments [in]parameters to be parsed (app.arguments())
  * @param url       [out]target URL
  * @param params    [out]parsed parameters
+ * @return bool Success/Failure
  */
 static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 {
@@ -58,6 +60,7 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	const QRegExp regexp_timer          ("--timer=(\\d+)");
 	const QRegExp regexp_max_requests   ("--max-requests=(\\d+)");
 	const QRegExp regexp_silent         ("--silent");
+	const QRegExp regexp_version        ("--version");
 	const QRegExp regexp_url            ("^\\w+://");
 
 	QStringList::const_iterator p = arguments.begin();
@@ -147,6 +150,11 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 			qInstallMsgHandler(silentMsgHandler);
 			continue;
 		}
+		if(regexp_version.exactMatch(arg))
+		{
+			version();
+			break;
+		}
 
 		if(arg[0] == QChar('-'))
 		{
@@ -175,4 +183,17 @@ static void silentMsgHandler(QtMsgType type, const char * /* msg */)
 	{
 		abort();
 	}
+}
+
+/**
+ * displays version information and exit
+ */
+static void version()
+{
+	std::cout
+		<< SOFTWARE_NAME << " version: " << SOFTWARE_VERSION << std::endl
+//		<< "Qt version: " << qVersion() << std::endl
+		<< "WebKit version: " << qWebKitVersion().toStdString() << std::endl
+	;
+	exit(0);
 }

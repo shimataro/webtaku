@@ -7,6 +7,10 @@
 #include <QSize>
 #include <stddef.h>
 
+#define SOFTWARE_NAME    "webtaku"
+#define SOFTWARE_VERSION "1.0"
+
+
 /**
  * enumeration of exit status
  */

@@ -13,6 +13,7 @@ function __webtaku_complete_wordlist()
 --timer=
 --crop 
 --silent 
+--version 
 WORDLIST
 }
 
