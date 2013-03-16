@@ -2,7 +2,7 @@
 
 function __webtaku_complete_wordlist()
 {
-	cat <<COMPLISTS
+	cat <<WORDLIST
 --format=
 --output=
 --accept-language=
@@ -11,14 +11,18 @@ function __webtaku_complete_wordlist()
 --min-size=
 --scaled-size=
 --timer=
---crop
---silent
-COMPLISTS
+--crop 
+--silent 
+WORDLIST
 }
 
 function __webtaku_complete()
 {
-	COMPREPLY=(`compgen -W "$(__webtaku_complete_wordlist)" -- ${COMP_WORDS[COMP_CWORD]}`)
+	local wordlist=`__webtaku_complete_wordlist`
+	local current=${COMP_WORDS[COMP_CWORD]}
+
+	local IFS=$'\n'
+	COMPREPLY=(`compgen -W "${wordlist}" -- "${current}"`)
 }
 
-complete -F __webtaku_complete webtaku
+complete -o nospace -F __webtaku_complete webtaku
