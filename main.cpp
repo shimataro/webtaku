@@ -169,6 +169,12 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 		}
 		url = QUrl(arg);
 	}
+
+	if(url.isEmpty())
+	{
+		std::cerr << "URL is not specified" << std::endl;
+		result = false;
+	}
 	return result;
 }
 
