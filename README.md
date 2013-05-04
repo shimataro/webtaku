@@ -12,7 +12,7 @@
     # (webtaku:XXXXX): Gtk-WARNING **: Unable to locate theme engine in module_path: "pixmap"
     sudo apt-get -y install gtk2-engines-pixbuf
 
-    # virtual X frame buffer (when X server is not running)
+    # virtual X frame buffer (if your system has no GUI)
     sudo apt-get -y install xvfb
 
 ## build & install
@@ -54,7 +54,7 @@ if you are using Intel C++ Compiler, run `qmake` as following
 ### when X server is not running, use virtual frame buffer
 
     # use "--output" option because xvfb-run redirects stderr to stdout
-    xvfb-run --server-args="-screen 0, 1024x768x24" webtaku --output=output.png "http://example.com/"
+    xvfb-run --auto-servernum webtaku --output=output.png "http://example.com/"
 
 ### "--accept-language" to set acceptable languages list
 
