@@ -51,7 +51,7 @@ if you are using Intel C++ Compiler, run `qmake` as following
     # file format will be determined by extension ("--format" option will be ignored)
     webtaku --output=output.png "http://example.com/"
 
-### when X server is not running, use virtual frame buffer
+### when your system has no GUI, use virtual frame buffer
 
     # use "--output" option because xvfb-run redirects stderr to stdout
     xvfb-run --auto-servernum webtaku --output=output.png "http://example.com/"
