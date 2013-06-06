@@ -38,19 +38,19 @@ CONFIG(release, debug|release) {
 
 # installation settings
 	unix {
-		LOCATION = /usr/local/
+		LOCATION_INSTALLATION = /usr/local/
 		LOCATION_COMPLETION = /etc/bash_completion.d/
 
-		target.path  = $${LOCATION}bin
+		target.path  = $${LOCATION_INSTALLATION}bin
 		target.files = $${TARGET}
 #		target.extra = <commands>
 
-		source.path  = $${LOCATION}src/$${PROJECT}
+		source.path  = $${LOCATION_INSTALLATION}src/$${PROJECT}
 		source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md root
 #		source.extra = <commands>
 
-		man.path  = $${LOCATION}share/man
-		man.files = root$${LOCATION}man/*
+		man.path  = $${LOCATION_INSTALLATION}share/man
+		man.files = root$${LOCATION_INSTALLATION}man/*
 #		man.extra = <commands>
 
 		completion.path  = $${LOCATION_COMPLETION}
