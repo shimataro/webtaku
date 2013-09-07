@@ -56,6 +56,9 @@ if you are using Intel C++ Compiler, run `qmake` as following
     # use "--output" option because xvfb-run redirects stderr to stdout
     xvfb-run --auto-servernum webtaku --output=output.png "http://example.com/"
 
+    # or set "-noreset" option since xvfb seems to cause memory leaks.
+    xvfb-run --auto-servernum --server-args="-noreset" webtaku --output=output.png "http://example.com/"
+
 ### "--accept-language" to set acceptable languages list
 
     webtaku --accept-language="en-US,jp;q=0.8,en;q=0.6" "http://example.com/" >output.ppm
