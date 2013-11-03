@@ -119,3 +119,7 @@ if you are using Intel C++ Compiler, run `qmake` as following
 ### for more complex conversion, use ImageMagick as below
 
     webtaku --min-size=1200x900 "http://example.com/" | convert -crop 500x500+100+100 -rotate +90 -resize 250x250 - output.ppm
+
+# Project Page
+
+http://shimataro.github.io/webtaku/
