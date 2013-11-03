@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Webtaku by shimataro</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/shimataro/webtaku">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/shimataro/webtaku/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/shimataro/webtaku/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Webtaku</h1>
+          <p>WEBTAKU is webpage snapshot image generator sounds like GYOTAKU(魚拓; gyo-taku), forked from raphaelcruzeiro/webimage.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/shimataro">shimataro</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="setup-instructions" class="anchor" href="#setup-instructions"><span class="octicon octicon-link"></span></a>Setup Instructions</h1>
+
+<h2>
+<a name="install-the-packages" class="anchor" href="#install-the-packages"><span class="octicon octicon-link"></span></a>install the packages</h2>
+
+<pre><code># essential packages
+sudo apt-get -y install libqtwebkit-dev libicu-dev
+
+# fonts
+sudo apt-get -y install ttf-mscorefonts-installer ttf-umefont
+
+# if following message is displayed (especially Ubuntu 11.10 or later):
+# (webtaku:XXXXX): Gtk-WARNING **: Unable to locate theme engine in module_path: "pixmap"
+sudo apt-get -y install gtk2-engines-pixbuf
+
+# virtual X frame buffer (if your system has no GUI)
+sudo apt-get -y install xvfb
+</code></pre>
+
+<h2>
+<a name="build--install" class="anchor" href="#build--install"><span class="octicon octicon-link"></span></a>build &amp; install</h2>
+
+<p>(will be installed into /usr/local/bin and /usr/local/src)</p>
+
+<pre><code>git clone https://github.com/shimataro/webtaku.git
+cd webtaku
+qmake CONFIG+=release
+make
+sudo make install
+</code></pre>
+
+<p>if you are using Intel C++ Compiler, run <code>qmake</code> as following</p>
+
+<pre><code>qmake CONFIG+=release QMAKE_CC=icc QMAKE_CXX=icpc QMAKE_LINK=icpc
+</code></pre>
+
+<hr><h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<h2>
+<a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>basic usage</h2>
+
+<h3>
+<a name="dump-image-data-into-stdout-default-file-format-is-ppm" class="anchor" href="#dump-image-data-into-stdout-default-file-format-is-ppm"><span class="octicon octicon-link"></span></a>dump image data into stdout (default file format is PPM)</h3>
+
+<pre><code>webtaku "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="if-scheme-is-omitted-http-will-be-complemented" class="anchor" href="#if-scheme-is-omitted-http-will-be-complemented"><span class="octicon octicon-link"></span></a>if scheme is omitted, "http://" will be complemented</h3>
+
+<pre><code>webtaku "example.com" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--format-to-specify-file-format-bmpjpgpngppmxbmxpm" class="anchor" href="#--format-to-specify-file-format-bmpjpgpngppmxbmxpm"><span class="octicon octicon-link"></span></a>"--format" to specify file format (BMP|JPG|PNG|PPM|XBM|XPM)</h3>
+
+<pre><code>webtaku --format=JPG "http://example.com/" &gt;output.jpg
+</code></pre>
+
+<h3>
+<a name="--output-to-specify-output-file" class="anchor" href="#--output-to-specify-output-file"><span class="octicon octicon-link"></span></a>"--output" to specify output file</h3>
+
+<pre><code># file format will be determined by extension ("--format" option will be ignored)
+webtaku --output=output.png "http://example.com/"
+</code></pre>
+
+<h3>
+<a name="when-your-system-has-no-gui-use-virtual-frame-buffer" class="anchor" href="#when-your-system-has-no-gui-use-virtual-frame-buffer"><span class="octicon octicon-link"></span></a>when your system has no GUI, use virtual frame buffer</h3>
+
+<pre><code># use "--output" option because xvfb-run redirects stderr to stdout
+# ("-noreset" option is necessary to avoid memory leaks of xvfb)
+xvfb-run --auto-servernum --server-args="-noreset" webtaku --output=output.png "http://example.com/"
+</code></pre>
+
+<h3>
+<a name="--accept-language-to-set-acceptable-languages-list" class="anchor" href="#--accept-language-to-set-acceptable-languages-list"><span class="octicon octicon-link"></span></a>"--accept-language" to set acceptable languages list</h3>
+
+<pre><code>webtaku --accept-language="en-US,jp;q=0.8,en;q=0.6" "http://example.com/" &gt;output.ppm
+
+# you can use multiple "--accept-language" options to set multiple acceptable languages in this order
+webtaku --accept-language="en-US" --accept-language=="jp;q=0.8" --accept-language="en;q=0.6" "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--cookie-to-set-cookie" class="anchor" href="#--cookie-to-set-cookie"><span class="octicon octicon-link"></span></a>"--cookie" to set cookie</h3>
+
+<pre><code>webtaku --cookie="name1=value1;name2=value2" "http://example.com/" &gt;output.ppm
+
+# you can use multiple "--cookie" options to set multiple cookies
+webtaku --cookie="name1=value1" --cookie="name2=value2" "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--min-size-to-specify-minimum-viewport-size-default-is-1024x768" class="anchor" href="#--min-size-to-specify-minimum-viewport-size-default-is-1024x768"><span class="octicon octicon-link"></span></a>"--min-size" to specify minimum viewport size (default is 1024x768)</h3>
+
+<pre><code>webtaku --min-size=1200x900 "http://example.com/" &gt;output.ppm
+webtaku --min-size=1200x "http://example.com/" &gt;output.ppm
+webtaku --min-size=x900 "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--scaled-size-to-resize-image-as-below" class="anchor" href="#--scaled-size-to-resize-image-as-below"><span class="octicon octicon-link"></span></a>"--scaled-size" to resize image as below</h3>
+
+<pre><code># this will create 300x225 image
+webtaku --scaled-size=300x300 "http://example.com/" &gt;output.ppm
+
+# use upper case "X" to resize by long-side (this will create 400x300 image)
+webtaku --scaled-size=300X300 "http://example.com/" &gt;output.ppm
+
+# use colon ":" NOT to keep aspect ratio (this will create 300x300 image)
+webtaku --scaled-size=300:300 "http://example.com/" &gt;output.ppm
+
+# omit height to resize by width (300x225)
+webtaku --scaled-size=300x "http://example.com/" &gt;output.ppm
+
+# omit width to resize by height (400x300)
+webtaku --scaled-size=x300 "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--crop-to-crop-image-by-minimum-viewport-size" class="anchor" href="#--crop-to-crop-image-by-minimum-viewport-size"><span class="octicon octicon-link"></span></a>"--crop" to crop image by minimum viewport size</h3>
+
+<pre><code>webtaku --crop "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--silent-to-output-no-message" class="anchor" href="#--silent-to-output-no-message"><span class="octicon octicon-link"></span></a>"--silent" to output no message</h3>
+
+<pre><code>webtaku --silent "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h3>
+<a name="--user-agent-to-specify-user-agent" class="anchor" href="#--user-agent-to-specify-user-agent"><span class="octicon octicon-link"></span></a>"--user-agent" to specify user agent</h3>
+
+<pre><code># iPhone5 (iOS6)
+webtaku --user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-size=1136x640 "http://example.com/" &gt;output.ppm
+
+# iPad (iOS6)
+webtaku --user-agent="Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25" --min-size=1024x768 "http://example.com/" &gt;output.ppm
+</code></pre>
+
+<h2>
+<a name="advanced-usage" class="anchor" href="#advanced-usage"><span class="octicon octicon-link"></span></a>advanced usage</h2>
+
+<h3>
+<a name="to-create-320x240-thumbnail-from-1200x900-viewport" class="anchor" href="#to-create-320x240-thumbnail-from-1200x900-viewport"><span class="octicon octicon-link"></span></a>to create 320x240 thumbnail from 1200x900 viewport</h3>
+
+<pre><code>webtaku --min-size=1200x900 --crop --scaled-size=320x240 --output=output.png "http://example.com/"
+</code></pre>
+
+<h3>
+<a name="for-more-complex-conversion-use-imagemagick-as-below" class="anchor" href="#for-more-complex-conversion-use-imagemagick-as-below"><span class="octicon octicon-link"></span></a>for more complex conversion, use ImageMagick as below</h3>
+
+<pre><code>webtaku --min-size=1200x900 "http://example.com/" | convert -crop 500x500+100+100 -rotate +90 -resize 250x250 - output.ppm
+</code></pre>
+
+<h1>
+<a name="project-page" class="anchor" href="#project-page"><span class="octicon octicon-link"></span></a>Project Page</h1>
+
+<p><a href="http://shimataro.github.io/webtaku/">http://shimataro.github.io/webtaku/</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-45386383-3");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
