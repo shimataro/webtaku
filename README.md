@@ -2,6 +2,8 @@
 
 ## install the packages
 
+### [Ubuntu](http://www.ubuntu.com/)
+
     # essential packages
     sudo apt-get -y install libqtwebkit-dev libicu-dev
 
@@ -15,14 +17,29 @@
     # virtual X frame buffer (if your system has no GUI)
     sudo apt-get -y install xvfb
 
+### [Gentoo Linux](http://www.gentoo.org/)
+
+    # essential packages
+    emerge dev-qt/qtwebkit
+
+    # fonts
+    emerge media-fonts/umeplus-fonts media-fonts/ubuntu-font-family
+
+    # X.org Server (if your system has no GUI, specify "xvfb" flag in USE)
+    emerge x11-base/xorg-server
+
 ## build & install
-(will be installed into /usr/local/bin and /usr/local/src)
+(default prefix is "/usr/local")
 
     git clone https://github.com/shimataro/webtaku.git
     cd webtaku
     qmake CONFIG+=release
     make
     sudo make install
+
+to change prefix, run `qmake` as following
+
+    qmake PREFIX=/usr
 
 if you are using Intel C++ Compiler, run `qmake` as following
 
