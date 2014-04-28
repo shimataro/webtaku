@@ -50,7 +50,7 @@ CONFIG(release, debug|release) {
 #		target.extra = <commands>
 
 		source.path  = $${PREFIX}/src/$${PROJECT}
-		source.files = $${SOURCES} $${HEADERS} $${PROJECT}.pro LICENSE README.md files
+		source.files = $${PROJECT}.pro LICENSE README.md $${SOURCES} $${HEADERS} files packages
 #		source.extra = <commands>
 
 		man.path  = $${PREFIX}/share/man
