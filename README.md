@@ -29,7 +29,6 @@
     emerge x11-base/xorg-server
 
 ## build & install
-(default prefix is "/usr/local")
 
     git clone https://github.com/shimataro/webtaku.git
     cd webtaku
@@ -37,13 +36,18 @@
     make
     sudo make install
 
-to change prefix, run `qmake` as following
+to change prefix(default is "/usr/local"), run `qmake` as following
 
     qmake PREFIX=/usr
 
+to change bash completion directory(default is "/etc/bash\_completion.d"), run `qmake` as following
+
+    # e.g., in Gentoo Linux, specify as following
+    qmake BASH_COMPLETION_DIR=/usr/share/bash-completion
+
 if you are using Intel C++ Compiler, run `qmake` as following
 
-    qmake CONFIG+=release QMAKE_CC=icc QMAKE_CXX=icpc QMAKE_LINK=icpc
+    qmake QMAKE_CC=icc QMAKE_CXX=icpc QMAKE_LINK=icpc
 
 ---
 

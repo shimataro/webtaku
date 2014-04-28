@@ -41,7 +41,9 @@ CONFIG(release, debug|release) {
 		isEmpty(PREFIX) {
 			PREFIX = /usr/local
 		}
-		LOCATION_COMPLETION = /etc/bash_completion.d
+		isEmpty(BASH_COMPLETION_DIR) {
+			BASH_COMPLETION_DIR = /etc/bash_completion.d
+		}
 
 		target.path  = $${PREFIX}/bin
 		target.files = $${TARGET}
@@ -55,8 +57,8 @@ CONFIG(release, debug|release) {
 		man.files = files/prefix/share/man/*
 #		man.extra = <commands>
 
-		completion.path  = $${LOCATION_COMPLETION}/
-		completion.files = files/root$${LOCATION_COMPLETION}/webtaku
+		completion.path  = $${BASH_COMPLETION_DIR}/
+		completion.files = files/completion/bash/*
 #		completion.extra = <commands>
 
 		INSTALLS += target source man completion
