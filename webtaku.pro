@@ -1,4 +1,4 @@
-# qmake CONFIG+=<debug|release>
+# qmake CONFIG+=<debug|release> PREFIX=<prefix> BASH_COMPLETION_DIR=<bash-completion-directory>
 
 QT += core webkit network
 
@@ -32,9 +32,6 @@ CONFIG(debug, debug|release) {
 	QMAKE_LFLAGS   += -O0 -pg
 }
 CONFIG(release, debug|release) {
-	QMAKE_CFLAGS   += -Ofast
-	QMAKE_CXXFLAGS += -Ofast
-	QMAKE_LFLAGS   += -Ofast
 
 # installation settings
 	unix {
