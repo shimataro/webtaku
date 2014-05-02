@@ -28,6 +28,9 @@
     # X.org Server (if your system has no GUI, specify "xvfb" flag in USE)
     emerge x11-base/xorg-server
 
+Or, you can create overlay package easily because ebuild files are in "packages/ebuild" directory.
+(if your system has no GUI, specify "nogui" flag in USE)
+
 ## build & install
 
     git clone https://github.com/shimataro/webtaku.git
@@ -74,8 +77,13 @@ if you are using Intel C++ Compiler, run `qmake` as following
 
 ### when your system has no GUI, use virtual frame buffer
 
-    # use "--output" option because xvfb-run redirects stderr to stdout
-    # ("-noreset" option is necessary to avoid memory leaks of xvfb)
+    # terminal 1: run Xvfb ("-noreset" option is necessary to avoid memory leaks)
+    Xvfb :0 -noreset
+    # terminal 2: generate image
+    DISPLAY=:0 webtaku "http://example.com/" >output.ppm
+
+    # in Ubuntu, xvfb-run can be used to generate image in one-liner
+    # note: use "--output" option because xvfb-run redirects stderr to stdout
     xvfb-run --auto-servernum --server-args="-noreset" webtaku --output=output.png "http://example.com/"
 
 ### "--accept-language" to set acceptable languages list
