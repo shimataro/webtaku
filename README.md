@@ -28,7 +28,8 @@
     # X.org Server (if your system has no GUI, specify "xvfb" flag in USE)
     emerge x11-base/xorg-server
 
-Or, you can create overlay package easily because ebuild files are in "packages/ebuild" directory.
+Or you can create overlay package easily by using ebuild files in "packages/ebuild" directory.
+
 (if your system has no GUI, specify "nogui" flag in USE)
 
 ## build & install

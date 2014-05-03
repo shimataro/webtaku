@@ -1,4 +1,4 @@
-.TH webtaku 1 "01/03/2013" "shimataro" "Utility"
+.TH webtaku 1 "03/05/2014" "shimataro" "Utility"
 
 
 .\"========================================
@@ -181,7 +181,7 @@ generate 320x240 thumbnail from 1200x900 viewport
 for more complex conversion, use ImageMagick as above.
 
 .TP
-\fBxvfb\-run\fR \-\-server\-args="\-screen 0, 1024x768x24" \fBwebtaku\fR \-\-output=output.png "http://example.com/"
+\fBxvfb\-run\fR \-\-auto\-servernum \-\-server\-args="\-noreset" \fBwebtaku\fR \-\-output=output.png "http://example.com/"
 use virtual frame buffer when the machine has no X or any other GUI systems (such as LAMP web servers).
 
 \fBNOTE\fR:
@@ -190,7 +190,7 @@ use virtual frame buffer when the machine has no X or any other GUI systems (suc
 
 .\"========================================
 .SH VERSION INFORMATION
-This manpage describes \fBwebtaku\fR, version 1.0.
+This manpage describes \fBwebtaku\fR, version 1.2.1.
 
 
 .\"========================================
@@ -207,6 +207,18 @@ Renamed to \fBwebtaku\fR.
 .TP
 01/03/2013
 Version 1.0 released
+
+.TP
+18/03/2013
+Version 1.1 released
+
+.TP
+28/04/2014
+Version 1.2 released
+
+.TP
+03/05/2014
+Version 1.2.1 released
 
 
 .\"========================================
