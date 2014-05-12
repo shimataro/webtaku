@@ -15,11 +15,18 @@ EGIT_COMMIT="v${PV}"
 LICENSE="GPL-3"
 SLOT="1"
 KEYWORDS="amd64 x86 ~ppc ~ppc64"
-IUSE="nogui"
+IUSE="-icc -nogui"
 
 RDEPEND="nogui? ( x11-base/xorg-server[xvfb] )"
 DEPEND=">=dev-qt/qtwebkit-4"
 
 src_configure() {
-	eqmake4 CONFIG+=release PREFIX=/usr BASH_COMPLETION_DIR=$(get_bashcompdir)
+	OPTIONS="CONFIG+=release"
+	OPTIONS="${OPTIONS} PREFIX=/usr"
+	OPTIONS="${OPTIONS} BASH_COMPLETION_DIR=$(get_bashcompdir)"
+	if use icc; then
+		OPTIONS="${OPTIONS} QMAKE_CC=icc QMAKE_CXX=icpc QMAKE_LINK=icpc"
+	fi
+
+	eqmake4 ${OPTIONS}
 }

@@ -1,6 +1,6 @@
 # Setup Instructions
 
-## install the packages
+## preparation
 
 ### [Ubuntu](http://www.ubuntu.com/)
 
@@ -25,7 +25,7 @@
     # fonts
     emerge media-fonts/umeplus-fonts media-fonts/ubuntu-font-family
 
-    # X.org Server (if your system has no GUI, specify "xvfb" flag in USE)
+    # X.Org Server (if your system has no GUI, specify "xvfb" flag in USE)
     emerge x11-base/xorg-server
 
 Or you can create overlay package easily by using ebuild files in "packages/ebuild" directory.
@@ -50,6 +50,7 @@ to change bash completion directory(default is "/etc/bash\_completion.d"), run `
     qmake BASH_COMPLETION_DIR=/usr/share/bash-completion
 
 if you are using Intel C++ Compiler, run `qmake` as following
+("icc" USE flag does same thing)
 
     qmake QMAKE_CC=icc QMAKE_CXX=icpc QMAKE_LINK=icpc
 
