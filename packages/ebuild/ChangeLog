@@ -2,6 +2,9 @@
 # Copyright 1999-2014 Gentoo Foundation; Distributed under the GPL v3
 # $Header: $
 
+  13 May 2014; Shimataro <shimataro@zelkova.cc> +webtaku-1.2.3.ebuild:
+  * emerge Intel C++ Compiler with "icc" USE flag
+
   10 May 2014; Shimataro <shimataro@zelkova.cc> +webtaku-1.2.2.ebuild:
   * supported "icc" USE flag
 

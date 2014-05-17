@@ -17,8 +17,13 @@ SLOT="1"
 KEYWORDS="amd64 x86 ~ppc ~ppc64"
 IUSE="-icc -nogui"
 
-RDEPEND="nogui? ( x11-base/xorg-server[xvfb] )"
-DEPEND=">=dev-qt/qtwebkit-4"
+RDEPEND="
+	nogui? ( x11-base/xorg-server[xvfb] )
+"
+DEPEND="
+	icc? ( dev-lang/icc )
+	>=dev-qt/qtwebkit-4
+"
 
 src_configure() {
 	OPTIONS="CONFIG+=release"
