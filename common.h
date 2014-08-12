@@ -32,6 +32,7 @@ struct PARAMS
 	QString             outputFilename;
 	QString             outputFormat;
 	QString             userAgent;
+	QString             defaultEncoding;
 	QByteArray          acceptLanguage;
 	QByteArray          cookie;
 	QSize               minSize;

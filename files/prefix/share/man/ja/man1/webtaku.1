@@ -1,4 +1,4 @@
-.TH webtaku 1 "2014年05月03日" "shimataro" "ユーティリティ"
+.TH webtaku 1 "2014年08月12日" "shimataro" "ユーティリティ"
 
 
 .\"========================================
@@ -24,6 +24,11 @@
 出力する画像形式を指定します。
 使用可能な形式は\fBBMP\fR/\fBJPG\fR/\fBPNG\fR/\fBPPM\fR/\fBXBM\fR/\fBXPM\fRです。
 省略した場合は\fBPPM\fR形式で出力されます。
+
+.TP
+\fB\-\-default\-encoding\fR=\fIDEFAULT_ENCODING\fR
+charsetが設定されていない場合のデフォルトエンコーディングを指定します。
+省略した場合は、\fBUTF\-8\fRが指定されたとみなします。
 
 .TP
 \fB\-\-output\fR=\fIFILENAME\fR
@@ -127,8 +132,9 @@ JavaScriptによるDOM調整が終わるのに十分な時間を設定してく�
 標準出力にPPM形式で出力し、\fBoutput.ppm\fRという名前で保存します。
 
 .TP
-\fBwebtaku\fR \-\-format=BMP "http://example.com/" >output.bmp
+\fBwebtaku\fR \-\-format=BMP \-\-default\-encoding=Shift_JIS "http://example.com/" >output.bmp
 標準出力にBMP形式で出力し、\fBoutput.bmp\fRという名前で保存します。
+ページの文字コードが指定されていない場合、Shift_JISでエンコードされているとみなします。
 
 .TP
 \fBwebtaku\fR \-\-output=output.png "http://example.com/"
@@ -198,7 +204,7 @@ LAMPサーバのようにXや他のGUIが搭載されていないマシン上で
 
 .\"========================================
 .SH バージョン情報
-このmanpageは、\fBwebtaku\fR version 1.2.1について記述しています。
+このmanpageは、\fBwebtaku\fR version 1.2.4について記述しています。
 
 
 .\"========================================
@@ -235,6 +241,10 @@ LAMPサーバのようにXや他のGUIが搭載されていないマシン上で
 .TP
 2014年05月18日
 バージョン1.2.3
+
+.TP
+2014年08月12日
+バージョン1.2.4
 
 
 .\"========================================

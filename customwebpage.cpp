@@ -36,6 +36,12 @@ bool CustomWebPage::shouldInterruptJavaScript()
 
 void CustomWebPage::slot_Gyotaku_paramsChanged(const PARAMS &params)
 {
+	// User-Agent
 	m_userAgent = params.userAgent;
+
+	// viewport size
 	setViewportSize(params.minSize);
+
+	// default encoding
+	settings()->setDefaultTextEncoding(params.defaultEncoding);
 }

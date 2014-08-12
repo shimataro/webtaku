@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	PARAMS params = {"", "PPM", "", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 1024, -1};
+	PARAMS params = {"", "PPM", "", "UTF-8", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 1024, -1};
 	if(!parseParams(app.arguments(), url, params))
 	{
 		return ES_INVALIDARGUMENT;
@@ -49,19 +49,20 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 {
 	bool result = true;
 
-	const QRegExp regexp_format         ("--format=(\\w+)");
-	const QRegExp regexp_output         ("--output=(.*)");
-	const QRegExp regexp_user_agent     ("--user-agent=(.*)");
-	const QRegExp regexp_accept_language("--accept-language=(.*)");
-	const QRegExp regexp_cookie         ("--cookie=(.*)");
-	const QRegExp regexp_min_size       ("--min-size=(\\d+)?([xX:])(\\d+)?");
-	const QRegExp regexp_scaled_size    ("--scaled-size=(\\d+)?([xX:])(\\d+)?");
-	const QRegExp regexp_crop           ("--crop");
-	const QRegExp regexp_timer          ("--timer=(\\d+)");
-	const QRegExp regexp_max_requests   ("--max-requests=(\\d+)");
-	const QRegExp regexp_silent         ("--silent");
-	const QRegExp regexp_version        ("--version");
-	const QRegExp regexp_url            ("^\\w+://");
+	const QRegExp regexp_format          ("--format=(\\w+)");
+	const QRegExp regexp_output          ("--output=(.*)");
+	const QRegExp regexp_user_agent      ("--user-agent=(.*)");
+	const QRegExp regexp_default_encoding("--default-encoding=(.*)");
+	const QRegExp regexp_accept_language ("--accept-language=(.*)");
+	const QRegExp regexp_cookie          ("--cookie=(.*)");
+	const QRegExp regexp_min_size        ("--min-size=(\\d+)?([xX:])(\\d+)?");
+	const QRegExp regexp_scaled_size     ("--scaled-size=(\\d+)?([xX:])(\\d+)?");
+	const QRegExp regexp_crop            ("--crop");
+	const QRegExp regexp_timer           ("--timer=(\\d+)");
+	const QRegExp regexp_max_requests    ("--max-requests=(\\d+)");
+	const QRegExp regexp_silent          ("--silent");
+	const QRegExp regexp_version         ("--version");
+	const QRegExp regexp_url             ("^\\w+://");
 
 	QStringList::const_iterator p = arguments.begin();
 	while(++p != arguments.end())
@@ -80,6 +81,11 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 		if(regexp_user_agent.exactMatch(arg))
 		{
 			params.userAgent = regexp_user_agent.cap(1);
+			continue;
+		}
+		if(regexp_default_encoding.exactMatch(arg))
+		{
+			params.defaultEncoding = regexp_default_encoding.cap(1);
 			continue;
 		}
 		if(regexp_accept_language.exactMatch(arg))

@@ -1,4 +1,4 @@
-.TH webtaku 1 "03/05/2014" "shimataro" "Utility"
+.TH webtaku 1 "08/12/2014" "shimataro" "Utility"
 
 
 .\"========================================
@@ -24,6 +24,11 @@ It's possible to create thumbnail by specifying options.
 Specify output format.
 Available formats are \fBBMP\fR/\fBJPG\fR/\fBPNG\fR/\fBPPM\fR/\fBXBM\fR/\fBXPM\fR.
 Default format is \fBPPM\fR.
+
+.TP
+\fB\-\-default\-encoding\fR=\fIDEFAULT_ENCODING\fR
+Specify default encoding when page has no charset.
+Default is \fBUTF\-8\fR.
 
 .TP
 \fB\-\-output\fR=\fIFILENAME\fR
@@ -121,8 +126,8 @@ specified no parameters
 output image to \fBstdout\fR with \fBPPM\fR format and redirect to file
 
 .TP
-\fBwebtaku\fR \-\-format=BMP "http://example.com/" >output.ppm
-output image to \fBstdout\fR with \fBBMP\fR format and redirect to file
+\fBwebtaku\fR \-\-format=BMP \-\-default\-encoding=ISO\-8859\-1 "http://example.com/" >output.ppm
+output image to \fBstdout\fR with \fBBMP\fR format and redirect to file(default encoding is ISO\-8859\-1)
 
 .TP
 \fBwebtaku\fR \-\-output=output.png "http://example.com/"
@@ -190,7 +195,7 @@ use virtual frame buffer when the machine has no X or any other GUI systems (suc
 
 .\"========================================
 .SH VERSION INFORMATION
-This manpage describes \fBwebtaku\fR, version 1.2.1.
+This manpage describes \fBwebtaku\fR, version 1.2.4.
 
 
 .\"========================================
@@ -227,6 +232,10 @@ Version 1.2.2 released
 .TP
 18/05/2014
 Version 1.2.3 released
+
+.TP
+12/08/2014
+Version 1.2.4 released
 
 
 .\"========================================
