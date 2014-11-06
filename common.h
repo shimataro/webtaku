@@ -20,6 +20,7 @@ enum EXITSTATUS
 	ES_INVALIDARGUMENT = 1,
 	ES_TOOMANYREQUESTS = 2,
 	ES_FAILEDTOSAVE    = 3,
+	ES_TIMEOUT         = 4,
 
 	ES_NOPARAMETERS = 255
 };
@@ -40,6 +41,7 @@ struct PARAMS
 	Qt::AspectRatioMode aspectRatioMode;
 	bool                crop;
 	int                 timer_ms;
+	int                 timeout_sec;
 	size_t              maxRequests;
 	int                 quality;
 };

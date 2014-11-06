@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	PARAMS params = {"", "PPM", "", "UTF-8", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 1024, -1};
+	PARAMS params = {"", "PPM", "", "UTF-8", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 0, 1024, -1};
 	if(!parseParams(app.arguments(), url, params))
 	{
 		return ES_INVALIDARGUMENT;
@@ -59,6 +59,7 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	const QRegExp regexp_scaled_size     ("--scaled-size=(\\d+)?([xX:])(\\d+)?");
 	const QRegExp regexp_crop            ("--crop");
 	const QRegExp regexp_timer           ("--timer=(\\d+)");
+	const QRegExp regexp_timeout         ("--timeout=(\\d+)");
 	const QRegExp regexp_max_requests    ("--max-requests=(\\d+)");
 	const QRegExp regexp_silent          ("--silent");
 	const QRegExp regexp_version         ("--version");
@@ -144,6 +145,11 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 		if(regexp_timer.exactMatch(arg))
 		{
 			params.timer_ms = regexp_timer.cap(1).toInt();
+			continue;
+		}
+		if(regexp_timeout.exactMatch(arg))
+		{
+			params.timeout_sec = regexp_timeout.cap(1).toInt();
 			continue;
 		}
 		if(regexp_max_requests.exactMatch(arg))

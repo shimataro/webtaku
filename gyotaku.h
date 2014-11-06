@@ -43,6 +43,9 @@ private:
 	QNetworkRequest m_request;
 	size_t          m_requestCount;
 
+	// whether page is loaded or not
+	bool m_loaded;
+
 	PARAMS m_params;
 };
 

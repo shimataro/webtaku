@@ -34,6 +34,7 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	m_qWebView = qWebView;
 	m_qTimer   = qTimer;
 	m_requestCount = 0;
+	m_loaded = false;
 
 	setParams(params);
 }
@@ -56,6 +57,12 @@ void Gyotaku::setParams(const PARAMS &params)
 
 void Gyotaku::rub(const QUrl &url)
 {
+	// set timeout
+	if(m_params.timeout_sec > 0)
+	{
+		m_qTimer->start(m_params.timeout_sec * 1000);
+	}
+
 	m_requestCount = 0;
 	m_request.setUrl(url);
 	m_qWebPage->mainFrame()->load(m_request);
@@ -144,6 +151,14 @@ void Gyotaku::slot_Timer_timeout()
 		return;
 	}
 
+	// timeout
+	if(!m_loaded)
+	{
+		qCritical() << "Fatal error: request timeout";
+		QApplication::exit(ES_TIMEOUT);
+		return;
+	}
+
 	qDebug() << "Done.";
 	QApplication::quit();
 }
@@ -151,6 +166,7 @@ void Gyotaku::slot_Timer_timeout()
 void Gyotaku::slot_WebPage_loadFinished(bool)
 {
 	// A reasonable waiting time for any script to execute
+	m_loaded = true;
 	m_qTimer->start(m_params.timer_ms);
 }
 
