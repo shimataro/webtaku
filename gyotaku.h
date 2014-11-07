@@ -11,14 +11,6 @@
 #include <QTimer>
 #include "common.h"
 
-enum REQUEST_STATUS
-{
-	RS_START,
-	RS_LOADED,
-	RS_TIMEOUT,
-	RS_TOOMANYREQUESTS,
-};
-
 class Gyotaku : QObject
 {
 	Q_OBJECT
@@ -45,6 +37,14 @@ signals:
 	void signal_paramsChanged(const PARAMS &params);
 
 private:
+	enum REQUEST_STATUS
+	{
+		RS_START,
+		RS_LOADED,
+		RS_TIMEOUT,
+		RS_TOOMANYREQUESTS
+	};
+
 	QWebPage *m_qWebPage;
 	QWebView *m_qWebView;
 	QTimer   *m_qTimerReady;
