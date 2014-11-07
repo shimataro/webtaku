@@ -3,6 +3,7 @@
  * @author shimataro
  */
 #include <QApplication>
+#include <sysexits.h>
 #include "gyotaku.h"
 #include "customwebpage.h"
 #include "customwebview.h"
@@ -13,7 +14,8 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	// create objects
 	CustomWebPage *qWebPage = new CustomWebPage;
 	CustomWebView *qWebView = new CustomWebView;
-	QTimer        *qTimer   = new QTimer(this);
+	QTimer        *qTimerReady   = new QTimer(this);
+	QTimer        *qTimerTimeout = new QTimer(this);
 
 	// setup objects
 	qWebPage->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
@@ -22,7 +24,8 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	QNetworkAccessManager *qNetworkAccessManager = qWebPage->networkAccessManager();
 
 	// setup signal/slot
-	connect(qTimer               , SIGNAL(timeout())                                 , SLOT(slot_Timer_timeout()));
+	connect(qTimerReady          , SIGNAL(timeout())                                 , SLOT(slot_Timer_ready()));
+	connect(qTimerTimeout        , SIGNAL(timeout())                                 , SLOT(slot_Timer_timeout()));
 	connect(qWebPage             , SIGNAL(loadFinished(bool))                        , SLOT(slot_WebPage_loadFinished(bool)));
 	connect(qNetworkAccessManager, SIGNAL(finished(QNetworkReply*))                  , SLOT(slot_NetworkAccessManager_finished(QNetworkReply*)));
 	connect(qNetworkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slot_NetworkAccessManager_sslErrors(QNetworkReply*,QList<QSslError>)));
@@ -32,10 +35,11 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 
 	m_qWebPage = qWebPage;
 	m_qWebView = qWebView;
-	m_qTimer   = qTimer;
+	m_qTimerReady   = qTimerReady;
+	m_qTimerTimeout = qTimerTimeout;
 	m_requestCount = 0;
-	m_loaded = false;
 
+	m_status = RS_START;
 	setParams(params);
 }
 
@@ -43,7 +47,8 @@ Gyotaku::~Gyotaku()
 {
 	delete m_qWebPage; m_qWebPage = NULL;
 	delete m_qWebView; m_qWebView = NULL;
-	delete m_qTimer; m_qTimer = NULL;
+	delete m_qTimerReady; m_qTimerReady = NULL;
+	delete m_qTimerTimeout; m_qTimerTimeout = NULL;
 }
 
 void Gyotaku::setParams(const PARAMS &params)
@@ -60,7 +65,7 @@ void Gyotaku::rub(const QUrl &url)
 	// set timeout
 	if(m_params.timeout_sec > 0)
 	{
-		m_qTimer->start(m_params.timeout_sec * 1000);
+		m_qTimerTimeout->start(m_params.timeout_sec * 1000);
 	}
 
 	m_requestCount = 0;
@@ -72,7 +77,7 @@ void Gyotaku::rub(const QUrl &url)
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
 
-QSize Gyotaku::_getImageSize()
+QSize Gyotaku::_getImageSize() const
 {
 	const QSize &size = m_params.minSize;
 	if(m_params.crop)
@@ -134,8 +139,10 @@ bool Gyotaku::_needsRedirect(int statusCode)
 ////////////////////////////////////////////////////////////////////////////////
 // slot methods
 
-void Gyotaku::slot_Timer_timeout()
+void Gyotaku::slot_Timer_ready()
 {
+	m_qTimerReady->stop();
+
 	// get image data
 	const QSize imageSize = _getImageSize();
 	QPixmap pixmap = QPixmap::grabWidget(m_qWebView, 0, 0, imageSize.width(), imageSize.height());
@@ -146,16 +153,21 @@ void Gyotaku::slot_Timer_timeout()
 	// output
 	if(!_outputImage(pixmap))
 	{
-		qCritical() << "Fatal error: failed to save image";
-		QApplication::exit(ES_FAILEDTOSAVE);
+		qCritical() << "Fatal: failed to save image";
+		QApplication::exit(EX_CANTCREAT);
 		return;
 	}
 
-	// timeout
-	if(!m_loaded)
+	if(m_status == RS_TOOMANYREQUESTS)
 	{
-		qCritical() << "Fatal error: request timeout";
-		QApplication::exit(ES_TIMEOUT);
+		qWarning() << "Warning: too many requests";
+		QApplication::exit(ES_WARNING_TOOMANYREQUESTS);
+		return;
+	}
+	if(m_status == RS_TIMEOUT)
+	{
+		qWarning() << "Warning: request timeout";
+		QApplication::exit(ES_WARNING_TIMEOUT);
 		return;
 	}
 
@@ -163,11 +175,21 @@ void Gyotaku::slot_Timer_timeout()
 	QApplication::quit();
 }
 
-void Gyotaku::slot_WebPage_loadFinished(bool)
+void Gyotaku::slot_Timer_timeout()
 {
-	// A reasonable waiting time for any script to execute
-	m_loaded = true;
-	m_qTimer->start(m_params.timer_ms);
+	m_status = RS_TIMEOUT;
+	m_qWebView->stop();
+}
+
+void Gyotaku::slot_WebPage_loadFinished(bool ok)
+{
+	if(ok)
+	{
+		m_status = RS_LOADED;
+	}
+
+	m_qTimerTimeout->stop();
+	m_qTimerReady->start(m_params.timer_ms);
 }
 
 void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
@@ -178,9 +200,8 @@ void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 
 	if(m_requestCount++ > m_params.maxRequests)
 	{
-		qCritical() << "Fatal error: too many requests";
-		QApplication::exit(ES_TOOMANYREQUESTS);
-		return;
+		m_status = RS_TOOMANYREQUESTS;
+		m_qWebView->stop();
 	}
 }
 

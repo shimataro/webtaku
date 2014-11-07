@@ -11,6 +11,14 @@
 #include <QTimer>
 #include "common.h"
 
+enum REQUEST_STATUS
+{
+	RS_START,
+	RS_LOADED,
+	RS_TIMEOUT,
+	RS_TOOMANYREQUESTS,
+};
+
 class Gyotaku : QObject
 {
 	Q_OBJECT
@@ -21,13 +29,14 @@ public:
 	void rub(const QUrl &url);
 
 private:
-	QSize   _getImageSize();
+	QSize   _getImageSize() const;
 	QPixmap _scaleImage (const QPixmap &pixmap) const;
 	bool    _outputImage(const QPixmap &pixmap) const;
 	static bool _needsRedirect(int statusCode);
 
 private slots:
 	void slot_WebPage_loadFinished(bool);
+	void slot_Timer_ready();
 	void slot_Timer_timeout();
 	void slot_NetworkAccessManager_finished(QNetworkReply *reply);
 	void slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
@@ -38,14 +47,13 @@ signals:
 private:
 	QWebPage *m_qWebPage;
 	QWebView *m_qWebView;
-	QTimer   *m_qTimer;
+	QTimer   *m_qTimerReady;
+	QTimer   *m_qTimerTimeout;
 
 	QNetworkRequest m_request;
 	size_t          m_requestCount;
 
-	// whether page is loaded or not
-	bool m_loaded;
-
+	REQUEST_STATUS m_status;
 	PARAMS m_params;
 };
 

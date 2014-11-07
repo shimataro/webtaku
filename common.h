@@ -12,18 +12,11 @@
 
 
 /**
- * enumeration of exit status
+ * exit status
  */
-enum EXITSTATUS
-{
-	ES_SUCCESS         = 0,
-	ES_INVALIDARGUMENT = 1,
-	ES_TOOMANYREQUESTS = 2,
-	ES_FAILEDTOSAVE    = 3,
-	ES_TIMEOUT         = 4,
+const int ES_WARNING_TOOMANYREQUESTS = 128;
+const int ES_WARNING_TIMEOUT         = 129;
 
-	ES_NOPARAMETERS = 255
-};
 
 /**
  * GYOTAKU parameters

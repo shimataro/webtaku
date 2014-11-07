@@ -5,6 +5,7 @@
 #include <qglobal.h>
 #include <QApplication>
 #include <iostream>
+#include <sysexits.h>
 #include "common.h"
 #include "gyotaku.h"
 
@@ -20,16 +21,16 @@ int main(int argc, char *argv[])
 		std::cerr << argv[0] << " [OPTIONS] <url>" << std::endl;
 		std::cerr << std::endl;
 		std::cerr << "see manpage for more information" << std::endl;
-		return ES_NOPARAMETERS;
+		return EX_USAGE;
 	}
 
 	QApplication app(argc, argv);
 
 	QUrl url;
-	PARAMS params = {"", "PPM", "", "UTF-8", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 0, 1024, -1};
+	PARAMS params = {"", "PPM", "", "UTF-8", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 0, 128, -1};
 	if(!parseParams(app.arguments(), url, params))
 	{
-		return ES_INVALIDARGUMENT;
+		return EX_USAGE;
 	}
 
 	Gyotaku gyotaku(params);
@@ -213,5 +214,5 @@ static void version()
 //		<< "Qt version: " << qVersion() << std::endl
 		<< "(WebKit version: " << qWebKitVersion().toStdString() << ")" << std::endl
 	;
-	exit(ES_SUCCESS);
+	exit(EXIT_SUCCESS);
 }
