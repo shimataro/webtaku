@@ -226,8 +226,8 @@ static void version()
 {
 	std::cout
 		<< SOFTWARE_NAME << " version: " << SOFTWARE_VERSION << std::endl
-//		<< "Qt version: " << qVersion() << std::endl
-		<< "(WebKit version: " << qWebKitVersion().toStdString() << ")" << std::endl
+		<< "    Qt version: " << qVersion() << std::endl
+		<< "    WebKit version: " << qWebKitVersion().toStdString() << std::endl
 	;
 	exit(EXIT_SUCCESS);
 }
