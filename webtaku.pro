@@ -13,6 +13,7 @@ SOURCES += \
 	customwebview.cpp
 
 HEADERS += \
+	common.h \
 	gyotaku.h \
 	customwebpage.h \
 	customwebview.h
