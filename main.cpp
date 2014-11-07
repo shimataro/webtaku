@@ -27,7 +27,22 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QUrl url;
-	PARAMS params = {"", "PPM", "", "UTF-8", "", "", QSize(1024, 768), QSize(0, 0), Qt::KeepAspectRatio, false, 500, 0, 128, -1};
+	PARAMS params = {
+		"",                             // outputFilename
+		"PPM",                          // outputFormat
+		"",                             // userAgent
+		"UTF-8",                        // defaultEncoding
+		"",                             // acceptLanguage
+		"",                             // cookie
+		QSize(1024, 768),               // minSize
+		QSize(0, 0),                    // scaledSize
+		Qt::KeepAspectRatio,            // aspectRatioMode
+		false,                          // crop
+		500,                            // timer_ms
+		15,                             // timeout_sec
+		100,                            // maxRequests
+		-1,                             // quality
+	};
 	if(!parseParams(app.arguments(), url, params))
 	{
 		return EX_USAGE;
