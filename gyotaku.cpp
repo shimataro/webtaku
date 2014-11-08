@@ -51,6 +51,11 @@ Gyotaku::~Gyotaku()
 	delete m_qTimerTimeout; m_qTimerTimeout = NULL;
 }
 
+/**
+ * sets parameters and fires "signal_paramsChanged" signal
+ *
+ * @param params: parameters
+ */
 void Gyotaku::setParams(const PARAMS &params)
 {
 	m_params = params;
@@ -60,6 +65,11 @@ void Gyotaku::setParams(const PARAMS &params)
 	emit signal_paramsChanged(params);
 }
 
+/**
+ * start capturing
+ *
+ * @param url: URL to be captured
+ */
 void Gyotaku::rub(const QUrl &url)
 {
 	// set timeout
@@ -77,6 +87,11 @@ void Gyotaku::rub(const QUrl &url)
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
 
+/**
+ * get actual image size
+ *
+ * @returns: image size; at least specified size by minSize
+ */
 QSize Gyotaku::_getImageSize() const
 {
 	const QSize &size = m_params.minSize;
@@ -95,6 +110,12 @@ QSize Gyotaku::_getImageSize() const
 	return contentsSize;
 }
 
+/**
+ * scale the image
+ *
+ * @param pixmap: image to be scaled
+ * @returns: scaled image
+ */
 QPixmap Gyotaku::_scaleImage(const QPixmap &pixmap) const
 {
 	const QSize &scaledSize = m_params.scaledSize;
@@ -116,6 +137,12 @@ QPixmap Gyotaku::_scaleImage(const QPixmap &pixmap) const
 	return pixmap.scaled(scaledSize, m_params.aspectRatioMode, Qt::SmoothTransformation);
 }
 
+/**
+ * output pixmap to file or stdout
+ *
+ * @param pixmap: image to be output
+ * @returns: OK/NG
+ */
 bool Gyotaku::_outputImage(const QPixmap &pixmap) const
 {
 	if(!m_params.outputFilename.isEmpty())
@@ -130,6 +157,12 @@ bool Gyotaku::_outputImage(const QPixmap &pixmap) const
 	}
 }
 
+/**
+ * is the resource needs to be redirected?
+ *
+ * @param statusCode: HTTP status code
+ * @returns: Yes/No
+ */
 bool Gyotaku::_needsRedirect(int statusCode)
 {
 	return (statusCode == 301 || statusCode == 302 || statusCode == 303 || statusCode == 307);
@@ -139,6 +172,13 @@ bool Gyotaku::_needsRedirect(int statusCode)
 ////////////////////////////////////////////////////////////////////////////////
 // slot methods
 
+/**
+ * fired when the page is ready
+ * * generate screenshot
+ * * scale the image
+ * * output the image
+ * * exit
+ */
 void Gyotaku::slot_Timer_ready()
 {
 	m_qTimerReady->stop();
@@ -175,12 +215,24 @@ void Gyotaku::slot_Timer_ready()
 	QApplication::quit();
 }
 
+/**
+ * fired when the page is out of time
+ * * set the status to TIEOUT
+ * * stop loading page
+ */
 void Gyotaku::slot_Timer_timeout()
 {
 	m_status = RS_TIMEOUT;
 	m_qWebView->stop();
 }
 
+/**
+ * fired when the page has been loaded
+ * * set the status to LOADED
+ * * wait until the page will be ready
+ *
+ * @param ok: is the page loaded successfully?
+ */
 void Gyotaku::slot_WebPage_loadFinished(bool ok)
 {
 	if(ok)
@@ -192,6 +244,13 @@ void Gyotaku::slot_WebPage_loadFinished(bool ok)
 	m_qTimerReady->start(m_params.timer_ms);
 }
 
+/**
+ * fired when a resource has been loaded
+ * * report the resource's information
+ * * stop loading page when the number of resource is too many
+ *
+ * @param reply: loading result
+ */
 void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 {
 	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
@@ -205,6 +264,13 @@ void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 	}
 }
 
+/**
+ * fired when SSL error has occurred
+ * * ignore the error
+ *
+ * @param reply: loading result
+ * @param errors: error list
+ */
 void Gyotaku::slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> & /* errors */)
 {
 	reply->ignoreSslErrors();

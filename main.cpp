@@ -56,10 +56,10 @@ int main(int argc, char *argv[])
 
 /**
  * parse command line parameters
- * @param arguments [in]parameters to be parsed (app.arguments())
- * @param url       [out]target URL
- * @param params    [out]parsed parameters
- * @return bool Success/Failure
+ * @param arguments: parameters to be parsed (app.arguments())
+ * @param url:       [out]target URL
+ * @param params:    [out]parsed parameters
+ * @returns: Success/Failure
  */
 static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 {
@@ -208,8 +208,9 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 
 /**
  * silent message handler
- * @param type [in]message type (debug/warning/critical/fatal)
- * @param msg  [in]message
+ *
+ * @param type: message type (debug/warning/critical/fatal)
+ * @param msg:  message
  */
 static void silentMsgHandler(QtMsgType type, const char * /* msg */)
 {
