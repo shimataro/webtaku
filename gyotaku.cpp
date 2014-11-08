@@ -253,9 +253,10 @@ void Gyotaku::slot_WebPage_loadFinished(bool ok)
  */
 void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 {
+	const QString url         = reply->url().toString();
 	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
 	const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-	qDebug() << "Got reply " + reply->url().toString() + " - " + statusCode + " - " + contentType;
+	qDebug().nospace() << qPrintable(url) << "\t" << "status=" << qPrintable(statusCode) << "\t" << "content-type=" << qPrintable(contentType);
 
 	if(m_requestCount++ > m_params.maxRequests)
 	{
