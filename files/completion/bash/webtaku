@@ -19,6 +19,7 @@ function __webtaku_complete_wordlist()
 --min-size=
 --scaled-size=
 --timer=
+--timeout=
 --crop
 --silent
 --version
