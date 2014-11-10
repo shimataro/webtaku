@@ -1,4 +1,4 @@
-.TH webtaku 1 "08/12/2014" "shimataro" "Utility"
+.TH webtaku 1 "11/10/2014" "shimataro" "Utility"
 
 
 .\"========================================
@@ -82,6 +82,11 @@ Set enough time for JavaScript to adjust DOM.
 Default is \fB500\fR.
 
 .TP
+\fB\-\-timeout\fR=\fITIME\fR
+Specify the timeout to abort loading webpage, \fBin seconds\fR(0=infinity).
+Default is \fB15\fR.
+
+.TP
 \fB\-\-silent\fR
 Output no message to stderr, except parameter error.
 Check exit status whether succeeded or not
@@ -94,29 +99,31 @@ Display software version and exit.
 
 .\"========================================
 .SH EXIT STATUS
+0 is successful, 128 or more are warnings, others are errors.
+
 .TP
 \fB0\fR
 normal termination
 (no errors)
 
 .TP
-\fB1\fR
+\fB64 (EX_USAGE)\fR
 invalid arguments
 (e.g., unparseable arguments)
 
 .TP
-\fB2\fR
-too many requests
-(e.g., looped redirects, nested iframes)
-
-.TP
-\fB3\fR
+\fB73 (EX_CANTCREAT)\fR
 failed to save file
 (e.g., unavailable format)
 
 .TP
-\fB255\fR
-specified no parameters
+\fB128\fR
+too many requests
+(e.g., looped redirects, nested iframes)
+
+.TP
+\fB129\fR
+timeout
 
 
 .\"========================================
