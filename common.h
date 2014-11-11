@@ -8,7 +8,7 @@
 #include <stddef.h>
 
 #define SOFTWARE_NAME    "webtaku"
-#define SOFTWARE_VERSION "1.0"
+#define SOFTWARE_VERSION "1.2.5"
 
 
 /**
