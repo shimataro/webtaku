@@ -14,6 +14,15 @@
 class Gyotaku : QObject
 {
 	Q_OBJECT
+private:
+	enum REQUEST_STATUS
+	{
+		RS_START,
+		RS_LOADED,
+		RS_TIMEOUT,
+		RS_TOOMANYREQUESTS
+	};
+
 public:
 	Gyotaku(const PARAMS &params, QObject *parent = NULL);
 	~Gyotaku();
@@ -24,6 +33,7 @@ private:
 	QSize   _getImageSize() const;
 	QPixmap _scaleImage (const QPixmap &pixmap) const;
 	bool    _outputImage(const QPixmap &pixmap) const;
+	void    _stopLoading(const REQUEST_STATUS &status);
 	static bool _needsRedirect(int statusCode);
 
 private slots:
@@ -37,14 +47,6 @@ signals:
 	void signal_paramsChanged(const PARAMS &params);
 
 private:
-	enum REQUEST_STATUS
-	{
-		RS_START,
-		RS_LOADED,
-		RS_TIMEOUT,
-		RS_TOOMANYREQUESTS
-	};
-
 	QWebPage *m_qWebPage;
 	QWebView *m_qWebView;
 	QTimer   *m_qTimerReady;
@@ -52,6 +54,7 @@ private:
 
 	QNetworkRequest m_request;
 	size_t          m_requestCount;
+	bool            m_requestStopped;
 
 	REQUEST_STATUS m_status;
 	PARAMS m_params;

@@ -37,7 +37,8 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	m_qWebView = qWebView;
 	m_qTimerReady   = qTimerReady;
 	m_qTimerTimeout = qTimerTimeout;
-	m_requestCount = 0;
+	m_requestCount   = 0;
+	m_requestStopped = false;
 
 	m_status = RS_START;
 	setParams(params);
@@ -158,6 +159,21 @@ bool Gyotaku::_outputImage(const QPixmap &pixmap) const
 }
 
 /**
+ * stops remaining requests
+ *
+ * @param status: status to change
+ */
+void Gyotaku::_stopLoading(const REQUEST_STATUS &status)
+{
+	m_status = status;
+	if(!m_requestStopped)
+	{
+		m_requestStopped = true;
+		m_qWebView->stop();
+	}
+}
+
+/**
  * is the resource needs to be redirected?
  *
  * @param statusCode: HTTP status code
@@ -222,8 +238,7 @@ void Gyotaku::slot_Timer_ready()
  */
 void Gyotaku::slot_Timer_timeout()
 {
-	m_status = RS_TIMEOUT;
-	m_qWebView->stop();
+	_stopLoading(RS_TIMEOUT);
 }
 
 /**
@@ -253,16 +268,17 @@ void Gyotaku::slot_WebPage_loadFinished(bool ok)
  */
 void Gyotaku::slot_NetworkAccessManager_finished(QNetworkReply *reply)
 {
+	m_requestCount++;
+	if(m_params.maxRequests > 0 && m_requestCount > m_params.maxRequests)
+	{
+		_stopLoading(RS_TOOMANYREQUESTS);
+		return;
+	}
+
 	const QString url         = reply->url().toString();
 	const QString statusCode  = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
 	const QString contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-	qDebug().nospace() << qPrintable(url) << "\t" << "status=" << qPrintable(statusCode) << "\t" << "content-type=" << qPrintable(contentType);
-
-	if(m_requestCount++ > m_params.maxRequests)
-	{
-		m_status = RS_TOOMANYREQUESTS;
-		m_qWebView->stop();
-	}
+	qDebug().nospace() << m_requestCount << '\t' << qPrintable(url) << '\t' << "status=" << qPrintable(statusCode) << '\t' << "content-type=" << qPrintable(contentType);
 }
 
 /**
