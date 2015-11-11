@@ -41,6 +41,17 @@ bool CustomWebPage::javaScriptConfirm(QWebFrame * /* originatingFrame */, const 
 	return false;
 }
 
+/**
+ * This function is called whenever a JavaScript program running inside frame tries to prompt the user for input. The program may provide an optional message, msg, as well as a default value for the input in defaultValue.
+ *
+ * @returns: If the prompt was cancelled by the user the implementation should return false; otherwise the result should be written to result and true should be returned. If the prompt was not cancelled by the user, the implementation should return true and the result string must not be null.
+ */
+bool CustomWebPage::javaScriptPrompt(QWebFrame * /* originatingFrame */, const QString &msg, const QString & /* defaultValue */, QString * /* result */)
+{
+	qDebug() << "Prompt: " << msg;
+	return false;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // slot methods

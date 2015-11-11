@@ -25,6 +25,7 @@ protected:
 	QString userAgentForUrl(const QUrl &url) const;
 	void javaScriptAlert(QWebFrame *originatingFrame, const QString &msg);
 	bool javaScriptConfirm(QWebFrame *originatingFrame, const QString &msg);
+	bool javaScriptPrompt(QWebFrame *originatingFrame, const QString &msg, const QString &defaultValue, QString *result);
 
 public slots:
 	bool shouldInterruptJavaScript();
