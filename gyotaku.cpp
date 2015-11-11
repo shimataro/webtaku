@@ -3,7 +3,6 @@
  * @author shimataro
  */
 #include <QApplication>
-#include <sysexits.h>
 #include "gyotaku.h"
 #include "customwebpage.h"
 #include "customwebview.h"
@@ -37,8 +36,7 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	m_qWebView = qWebView;
 	m_qTimerDelay   = qTimerDelay;
 	m_qTimerTimeout = qTimerTimeout;
-	m_requestCount   = 0;
-	m_requestStopped = false;
+	m_requestCount  = 0;
 
 	m_status = RS_START;
 	setParams(params);
@@ -76,6 +74,7 @@ void Gyotaku::rub(const QUrl &url)
 	// set timeout
 	if(m_params.timeout_sec > 0)
 	{
+		m_qTimerTimeout->setSingleShot(true);
 		m_qTimerTimeout->start(m_params.timeout_sec * 1000);
 	}
 
@@ -87,6 +86,14 @@ void Gyotaku::rub(const QUrl &url)
 
 ////////////////////////////////////////////////////////////////////////////////
 // private methods
+
+/**
+ * exit event loop with status code
+ */
+void Gyotaku::_exit(const int status /* = EXIT_SUCCESS */)
+{
+	QApplication::exit(status);
+}
 
 /**
  * get actual image size
@@ -165,12 +172,10 @@ bool Gyotaku::_outputImage(const QPixmap &pixmap) const
  */
 void Gyotaku::_stopLoading(const REQUEST_STATUS &status)
 {
+	m_qTimerTimeout->stop();
+	m_qWebView->stop();
+
 	m_status = status;
-	if(!m_requestStopped)
-	{
-		m_requestStopped = true;
-		m_qWebView->stop();
-	}
 }
 
 /**
@@ -202,31 +207,31 @@ void Gyotaku::slot_TimerDelay_timeout()
 	QPixmap pixmap = QPixmap::grabWidget(m_qWebView, 0, 0, imageSize.width(), imageSize.height());
 
 	// scale
-	pixmap = Gyotaku::_scaleImage(pixmap);
+	pixmap = _scaleImage(pixmap);
 
 	// output
 	if(!_outputImage(pixmap))
 	{
 		qCritical() << "Fatal: failed to save image";
-		QApplication::exit(EX_CANTCREAT);
+		_exit(EX_CANTCREAT);
 		return;
 	}
 
 	if(m_status == RS_TOOMANYREQUESTS)
 	{
 		qWarning() << "Warning: too many requests";
-		QApplication::exit(ES_WARNING_TOOMANYREQUESTS);
+		_exit(ES_WARNING_TOOMANYREQUESTS);
 		return;
 	}
 	if(m_status == RS_TIMEOUT)
 	{
 		qWarning() << "Warning: request timeout";
-		QApplication::exit(ES_WARNING_TIMEOUT);
+		_exit(ES_WARNING_TIMEOUT);
 		return;
 	}
 
 	qDebug() << "Done.";
-	QApplication::quit();
+	_exit();
 }
 
 /**

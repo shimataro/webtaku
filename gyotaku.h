@@ -9,6 +9,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QTimer>
+#include <sysexits.h>
 #include "common.h"
 
 class Gyotaku : QObject
@@ -30,6 +31,7 @@ public:
 	void rub(const QUrl &url);
 
 private:
+	void    _exit(const int status = EXIT_SUCCESS);
 	QSize   _getImageSize() const;
 	QPixmap _scaleImage (const QPixmap &pixmap) const;
 	bool    _outputImage(const QPixmap &pixmap) const;
