@@ -25,8 +25,9 @@ QString CustomWebPage::userAgentForUrl(const QUrl &url) const
 /**
  * This function is called whenever a JavaScript program running inside frame calls the alert() function with the message msg.
  */
-void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QString & /* msg */)
+void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QString &msg)
 {
+	qDebug() << "Alert: " << msg;
 }
 
 /**
@@ -34,8 +35,9 @@ void CustomWebPage::javaScriptAlert(QWebFrame * /* originatingFrame */, const QS
  *
  * @returns: whether the user confirms the message
  */
-bool CustomWebPage::javaScriptConfirm(QWebFrame * /* originatingFrame */, const QString & /* msg */)
+bool CustomWebPage::javaScriptConfirm(QWebFrame * /* originatingFrame */, const QString &msg)
 {
+	qDebug() << "Confirm: " << msg;
 	return false;
 }
 
