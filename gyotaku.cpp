@@ -14,7 +14,7 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	// create objects
 	CustomWebPage *qWebPage = new CustomWebPage;
 	CustomWebView *qWebView = new CustomWebView;
-	QTimer        *qTimerReady   = new QTimer(this);
+	QTimer        *qTimerDelay   = new QTimer(this);
 	QTimer        *qTimerTimeout = new QTimer(this);
 
 	// setup objects
@@ -24,8 +24,8 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 	QNetworkAccessManager *qNetworkAccessManager = qWebPage->networkAccessManager();
 
 	// setup signal/slot
-	connect(qTimerReady          , SIGNAL(timeout())                                 , SLOT(slot_Timer_ready()));
-	connect(qTimerTimeout        , SIGNAL(timeout())                                 , SLOT(slot_Timer_timeout()));
+	connect(qTimerDelay          , SIGNAL(timeout())                                 , SLOT(slot_TimerDelay_timeout()));
+	connect(qTimerTimeout        , SIGNAL(timeout())                                 , SLOT(slot_TimerTimeout_timeout()));
 	connect(qWebPage             , SIGNAL(loadFinished(bool))                        , SLOT(slot_WebPage_loadFinished(bool)));
 	connect(qNetworkAccessManager, SIGNAL(finished(QNetworkReply*))                  , SLOT(slot_NetworkAccessManager_finished(QNetworkReply*)));
 	connect(qNetworkAccessManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(slot_NetworkAccessManager_sslErrors(QNetworkReply*,QList<QSslError>)));
@@ -35,7 +35,7 @@ Gyotaku::Gyotaku(const PARAMS &params, QObject *parent) : QObject(parent)
 
 	m_qWebPage = qWebPage;
 	m_qWebView = qWebView;
-	m_qTimerReady   = qTimerReady;
+	m_qTimerDelay   = qTimerDelay;
 	m_qTimerTimeout = qTimerTimeout;
 	m_requestCount   = 0;
 	m_requestStopped = false;
@@ -48,7 +48,7 @@ Gyotaku::~Gyotaku()
 {
 	delete m_qWebPage; m_qWebPage = NULL;
 	delete m_qWebView; m_qWebView = NULL;
-	delete m_qTimerReady; m_qTimerReady = NULL;
+	delete m_qTimerDelay; m_qTimerDelay = NULL;
 	delete m_qTimerTimeout; m_qTimerTimeout = NULL;
 }
 
@@ -195,10 +195,8 @@ bool Gyotaku::_needsRedirect(int statusCode)
  * * output the image
  * * exit
  */
-void Gyotaku::slot_Timer_ready()
+void Gyotaku::slot_TimerDelay_timeout()
 {
-	m_qTimerReady->stop();
-
 	// get image data
 	const QSize imageSize = _getImageSize();
 	QPixmap pixmap = QPixmap::grabWidget(m_qWebView, 0, 0, imageSize.width(), imageSize.height());
@@ -236,7 +234,7 @@ void Gyotaku::slot_Timer_ready()
  * * set the status to TIEOUT
  * * stop loading page
  */
-void Gyotaku::slot_Timer_timeout()
+void Gyotaku::slot_TimerTimeout_timeout()
 {
 	_stopLoading(RS_TIMEOUT);
 }
@@ -256,7 +254,9 @@ void Gyotaku::slot_WebPage_loadFinished(bool ok)
 	}
 
 	m_qTimerTimeout->stop();
-	m_qTimerReady->start(m_params.timer_ms);
+
+	m_qTimerDelay->setSingleShot(true);
+	m_qTimerDelay->start(m_params.delay_ms);
 }
 
 /**

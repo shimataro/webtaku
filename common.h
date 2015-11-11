@@ -33,7 +33,7 @@ struct PARAMS
 	QSize               scaledSize;
 	Qt::AspectRatioMode aspectRatioMode;
 	bool                crop;
-	int                 timer_ms;
+	int                 delay_ms;
 	int                 timeout_sec;
 	size_t              maxRequests;
 	int                 quality;

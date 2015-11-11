@@ -38,8 +38,8 @@ private:
 
 private slots:
 	void slot_WebPage_loadFinished(bool);
-	void slot_Timer_ready();
-	void slot_Timer_timeout();
+	void slot_TimerDelay_timeout();
+	void slot_TimerTimeout_timeout();
 	void slot_NetworkAccessManager_finished(QNetworkReply *reply);
 	void slot_NetworkAccessManager_sslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 
@@ -49,12 +49,11 @@ signals:
 private:
 	QWebPage *m_qWebPage;
 	QWebView *m_qWebView;
-	QTimer   *m_qTimerReady;
+	QTimer   *m_qTimerDelay;
 	QTimer   *m_qTimerTimeout;
 
 	QNetworkRequest m_request;
 	size_t          m_requestCount;
-	bool            m_requestStopped;
 
 	REQUEST_STATUS m_status;
 	PARAMS m_params;

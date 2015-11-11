@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		QSize(0, 0),                    // scaledSize
 		Qt::KeepAspectRatio,            // aspectRatioMode
 		false,                          // crop
-		500,                            // timer_ms
+		500,                            // delay_ms
 		15,                             // timeout_sec
 		100,                            // maxRequests
 		-1,                             // quality
@@ -74,7 +74,7 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 	const QRegExp regexp_min_size        ("--min-size=(\\d+)?([xX:])(\\d+)?");
 	const QRegExp regexp_scaled_size     ("--scaled-size=(\\d+)?([xX:])(\\d+)?");
 	const QRegExp regexp_crop            ("--crop");
-	const QRegExp regexp_timer           ("--timer=(\\d+)");
+	const QRegExp regexp_delay           ("--delay=(\\d+)");
 	const QRegExp regexp_timeout         ("--timeout=(\\d+)");
 	const QRegExp regexp_max_requests    ("--max-requests=(\\d+)");
 	const QRegExp regexp_silent          ("--silent");
@@ -158,9 +158,9 @@ static bool parseParams(const QStringList &arguments, QUrl &url, PARAMS &params)
 			params.crop = true;
 			continue;
 		}
-		if(regexp_timer.exactMatch(arg))
+		if(regexp_delay.exactMatch(arg))
 		{
-			params.timer_ms = regexp_timer.cap(1).toInt();
+			params.delay_ms = regexp_delay.cap(1).toInt();
 			continue;
 		}
 		if(regexp_timeout.exactMatch(arg))
